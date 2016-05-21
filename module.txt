@@ -3,7 +3,7 @@
     "version" : "0.1.0-SNAPSHOT",
     "author" : "",
     "displayName" : "Anatomy",
-    "description" : "",
+    "description" : "A basic anatomy system for players, NPCs, and creatures alike.",
     "dependencies" : [
         {
             "id" : "Core",
