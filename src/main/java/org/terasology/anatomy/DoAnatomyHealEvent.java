@@ -19,15 +19,10 @@ import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.Event;
 
 /**
- * Created by Xt on 5/21/16.
- */
-
-/**
  * Send this event to an entity to heal its anatomy part(s).
  * Will be differentiated from DoHealEvent in the future.
  */
-public class DoAnatomyHealEvent implements Event
-{
+public class DoAnatomyHealEvent implements Event {
     private int amount;
     private EntityRef instigator;
 

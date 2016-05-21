@@ -15,27 +15,19 @@
  */
 package org.terasology.anatomy;
 
-
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.ReceiveEvent;
-import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.Component;
 import org.terasology.network.Replicate;
 
 /**
- * Created by Xt on 5/20/16.
+ * Note that later, this will be divided into more concrete components like LegsComponent, ArmsComponent,
+ * HandsComponent, etc.
  */
-
-// Note that later, this will be divided into more concrete components like LegsComponent, ArmsComponent,
-// HandsComponent, etc.
-public class AnatomyPartComponent implements Component
-{
+public class AnatomyPartComponent implements Component {
 
     /**
      * This will be used later to determine if this limb needs to be "revived".
      */
-    public boolean isDestroyed = false;
+    public boolean isDestroyed;
 
     @Replicate
     public String name = "Anatomy Part Name";
@@ -80,20 +72,12 @@ public class AnatomyPartComponent implements Component
 
     // Add perhaps stuff like leveling, skill leveling, or EXP?
 
-    public boolean isHealthFull()
-    {
-        if (health == maxHealth)
-            return true;
-        else
-            return false;
+    public boolean isHealthFull() {
+        return (health == maxHealth) ? true : false;
     }
 
-    public boolean isEnergyFull()
-    {
-        if (energy == maxEnergy)
-            return true;
-        else
-            return false;
+    public boolean isEnergyFull() {
+        return (energy == maxEnergy) ? true : false;
     }
 
     public void damage(float amount)
@@ -101,22 +85,21 @@ public class AnatomyPartComponent implements Component
         health -= amount;
     }
 
-
     // Heal this anatomical part's HP.
-    public void heal(float amount)
-    {
+    public void heal(float amount) {
         health += amount;
 
-        if (health >= maxHealth)
+        if (health >= maxHealth) {
             health = maxHealth;
+        }
     }
 
     // Recover this anatomical part's energy.
-    public void recover(float amount)
-    {
+    public void recover(float amount) {
         energy += amount;
 
-        if (energy >= maxEnergy)
+        if (energy >= maxEnergy) {
             energy = maxEnergy;
+        }
     }
 }

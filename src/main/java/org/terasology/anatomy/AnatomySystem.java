@@ -30,10 +30,6 @@ import org.terasology.logic.console.commandSystem.annotations.CommandParam;
 import org.terasology.registry.In;
 
 /**
- * Created by Xt on 5/20/16.
- */
-
-/**
  * Provides a basic system for managing an entity's anatomy.
  */
 @RegisterSystem
@@ -48,29 +44,23 @@ public class AnatomySystem extends BaseComponentSystem implements UpdateSubscrib
     private Time time;
 
     @Override
-    public void update(float delta)
-    {
+    public void update(float delta) {
         long gameTime = time.getGameTimeInMs();
 
-        for (EntityRef entity : entityManager.getEntitiesWith(AnatomyPartComponent.class))
-        {
+        for (EntityRef entity : entityManager.getEntitiesWith(AnatomyPartComponent.class)) {
             AnatomyPartComponent part = entity.getComponent(AnatomyPartComponent.class);
 
             // Check to see if health should be regenerated.
-            if (!part.isHealthFull())
-            {
-                if (gameTime >= part.nextHealthRegenTick)
-                {
+            if (!part.isHealthFull()) {
+                if (gameTime >= part.nextHealthRegenTick) {
                     part.heal(part.healthRegen); // Temporary. Replace with event.
                     part.nextHealthRegenTick = gameTime + part.timeBetweenHealthRegenTick; // 25500 is temporary. Replace with variable in Component.
                 }
             }
 
             // Check to see if energy should be regenerated.
-            if (!part.isEnergyFull())
-            {
-                if (gameTime >= part.nextHealthRegenTick)
-                {
+            if (!part.isEnergyFull()) {
+                if (gameTime >= part.nextHealthRegenTick) {
                     part.recover(part.energyRegen); // Temporary. Replace with event. Replace with variable in Component.
                     part.nextEnergyRegenTick = gameTime + part.timeBetweenEnergyRegenTick;
                 }
@@ -79,46 +69,36 @@ public class AnatomySystem extends BaseComponentSystem implements UpdateSubscrib
     }
 
     @ReceiveEvent(components = {HealthComponent.class, AnatomyPartComponent.class})
-    public void onDamage(DoAnatomyDamageEvent event, EntityRef entity, AnatomyPartComponent part)
-    {
+    public void onDamage(DoAnatomyDamageEvent event, EntityRef entity, AnatomyPartComponent part) {
         part.damage(event.getAmount());
 
         logger.info(part.name + " has taken " + event.getAmount() + " points of damage!\n");
-        // Do something
     }
 
     @ReceiveEvent(components = {HealthComponent.class, AnatomyPartComponent.class})
-    public void onHeal(DoAnatomyHealEvent event, EntityRef entity, AnatomyPartComponent part)
-    {
+    public void onHeal(DoAnatomyHealEvent event, EntityRef entity, AnatomyPartComponent part) {
         part.heal(event.getAmount());
 
         logger.info(part.name + " has recovered " + event.getAmount() + " points of health!\n");
-        // Do something
     }
 
     @Command(shortDescription = "Damage Anatomy component for amount", runOnServer = true)
-    public void dmgAnatomyPart(@CommandParam("amount") int amount)
-    {
-        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyPartComponent.class))
-        {
+    public void dmgAnatomyPart(@CommandParam("amount") int amount) {
+        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyPartComponent.class)) {
             clientEntity.send(new DoAnatomyDamageEvent(amount));
         }
     }
 
     @Command(shortDescription = "Heal Anatomy component for amount", runOnServer = true)
-    public void healAnatomyPart(@CommandParam("amount") int amount)
-    {
-        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyPartComponent.class))
-        {
+    public void healAnatomyPart(@CommandParam("amount") int amount) {
+        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyPartComponent.class)) {
             clientEntity.send(new DoAnatomyHealEvent(amount));
         }
     }
 
     @Command(shortDescription = "Shows Anatomy component health", runOnServer = true)
-    public void getAnatomyPartHealth()
-    {
-        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyPartComponent.class))
-        {
+    public void getAnatomyPartHealth() {
+        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyPartComponent.class)) {
             AnatomyPartComponent part = clientEntity.getComponent(AnatomyPartComponent.class);
             logger.info(part.name + " has " + part.health + " points of health!\n");
         }

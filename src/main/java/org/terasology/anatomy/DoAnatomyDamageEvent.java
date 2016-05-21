@@ -21,15 +21,10 @@ import org.terasology.entitySystem.prefab.Prefab;
 import org.terasology.logic.health.EngineDamageTypes;
 
 /**
- * Created by Xt on 5/21/16.
- */
-
-/**
  * Send this event to an entity to damage its anatomy part(s).
  * Will be differentiated from DoDamageEvent in the future.
  */
-public class DoAnatomyDamageEvent implements Event
-{
+public class DoAnatomyDamageEvent implements Event {
     private int amount;
     private Prefab damageType;
     private EntityRef instigator;
