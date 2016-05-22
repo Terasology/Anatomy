@@ -15,6 +15,8 @@
  */
 package org.terasology.anatomy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.Component;
 import org.terasology.network.Replicate;
 
@@ -24,10 +26,12 @@ import org.terasology.network.Replicate;
  */
 public class AnatomyPartComponent implements Component {
 
+    private static final Logger logger = LoggerFactory.getLogger(AnatomySystem.class);
+
     /**
-     * This will be used later to determine if this limb needs to be "revived".
+     * Used to determine if this limb needs to be "revived".
      */
-    public boolean isDestroyed;
+    public boolean isAlive = true;
 
     @Replicate
     public String name = "Anatomy Part Name";
@@ -42,25 +46,7 @@ public class AnatomyPartComponent implements Component {
     public int healthRegen = 1;
 
     @Replicate
-    public int energy = 100;
-
-    @Replicate
-    public int maxEnergy = 100;
-
-    @Replicate
-    public int energyRegen = 1;
-
-    @Replicate
-    public long nextHealthRegenTick;
-
-    @Replicate
-    public long timeBetweenHealthRegenTick = 2500;
-
-    @Replicate
-    public long nextEnergyRegenTick;
-
-    @Replicate
-    public long timeBetweenEnergyRegenTick = 2500;
+    public long timeBetweenHealthRegenTick = 2;
 
     // Add other stats (like strengths/weaknesses) pertaining to this part here. Such as AnatomyPartStatsComponent.
 
@@ -74,32 +60,5 @@ public class AnatomyPartComponent implements Component {
 
     public boolean isHealthFull() {
         return (health == maxHealth) ? true : false;
-    }
-
-    public boolean isEnergyFull() {
-        return (energy == maxEnergy) ? true : false;
-    }
-
-    public void damage(float amount)
-    {
-        health -= amount;
-    }
-
-    // Heal this anatomical part's HP.
-    public void heal(float amount) {
-        health += amount;
-
-        if (health >= maxHealth) {
-            health = maxHealth;
-        }
-    }
-
-    // Recover this anatomical part's energy.
-    public void recover(float amount) {
-        energy += amount;
-
-        if (energy >= maxEnergy) {
-            energy = maxEnergy;
-        }
     }
 }

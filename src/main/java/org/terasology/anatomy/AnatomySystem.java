@@ -23,7 +23,8 @@ import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
+import org.terasology.logic.delay.DelayManager;
+import org.terasology.logic.delay.PeriodicActionTriggeredEvent;
 import org.terasology.logic.health.*;
 import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.logic.console.commandSystem.annotations.CommandParam;
@@ -33,53 +34,72 @@ import org.terasology.registry.In;
  * Provides a basic system for managing an entity's anatomy.
  */
 @RegisterSystem
-public class AnatomySystem extends BaseComponentSystem implements UpdateSubscriberSystem
-{
+public class AnatomySystem extends BaseComponentSystem {
     private static final Logger logger = LoggerFactory.getLogger(AnatomySystem.class);
 
     @In
     private EntityManager entityManager;
 
     @In
-    private Time time;
+    DelayManager delayManager;
 
     @Override
-    public void update(float delta) {
-        long gameTime = time.getGameTimeInMs();
-
+    public void initialise() {
         for (EntityRef entity : entityManager.getEntitiesWith(AnatomyPartComponent.class)) {
             AnatomyPartComponent part = entity.getComponent(AnatomyPartComponent.class);
+            delayManager.addPeriodicAction(entity, "Anatomy:RegenHealth", part.timeBetweenHealthRegenTick, part.timeBetweenHealthRegenTick);
+        }
+    }
 
-            // Check to see if health should be regenerated.
-            if (!part.isHealthFull()) {
-                if (gameTime >= part.nextHealthRegenTick) {
-                    part.heal(part.healthRegen); // Temporary. Replace with event.
-                    part.nextHealthRegenTick = gameTime + part.timeBetweenHealthRegenTick; // 25500 is temporary. Replace with variable in Component.
-                }
-            }
-
-            // Check to see if energy should be regenerated.
-            if (!part.isEnergyFull()) {
-                if (gameTime >= part.nextHealthRegenTick) {
-                    part.recover(part.energyRegen); // Temporary. Replace with event. Replace with variable in Component.
-                    part.nextEnergyRegenTick = gameTime + part.timeBetweenEnergyRegenTick;
-                }
-            }
+    @ReceiveEvent
+    public void onHealthRegenDelayCompletion(PeriodicActionTriggeredEvent event, EntityRef entityRef, AnatomyPartComponent part) {
+        if (event.getActionId().equals("Anatomy:RegenHealth")) {
+            heal(part, part.healthRegen);
         }
     }
 
     @ReceiveEvent(components = {HealthComponent.class, AnatomyPartComponent.class})
     public void onDamage(DoAnatomyDamageEvent event, EntityRef entity, AnatomyPartComponent part) {
-        part.damage(event.getAmount());
+        if (part.isAlive) {
+            part.health -= event.getAmount();
 
-        logger.info(part.name + " has taken " + event.getAmount() + " points of damage!\n");
+            logger.info(part.name + " has taken " + event.getAmount() + " points of damage!\n");
+
+            if (part.health <= 0) {
+                part.health = 0;
+                part.isAlive = false;
+                logger.info(part.name + " has been destroyed!\n");
+            }
+        }
     }
 
     @ReceiveEvent(components = {HealthComponent.class, AnatomyPartComponent.class})
     public void onHeal(DoAnatomyHealEvent event, EntityRef entity, AnatomyPartComponent part) {
-        part.heal(event.getAmount());
+        heal(part, event.getAmount());
+    }
 
-        logger.info(part.name + " has recovered " + event.getAmount() + " points of health!\n");
+    @ReceiveEvent(components = {HealthComponent.class, AnatomyPartComponent.class})
+    public void onRevive(DoAnatomyReviveEvent event, EntityRef entity, AnatomyPartComponent part) {
+        if (!part.isAlive) {
+            part.isAlive = true;
+
+            heal(part, event.getAmount());
+            logger.info(part.name + " has been revived with " + part.health + " health!\n");
+        }
+    }
+
+    private void heal(AnatomyPartComponent part, int amount) {
+        if (part.isAlive & !part.isHealthFull()) {
+            part.health += amount;
+
+            logger.info(part.name + " has recovered " + amount + " points of health!\n");
+
+            if (part.health >= part.maxHealth) {
+                part.health = part.maxHealth;
+
+                logger.info(part.name + " is at max health!\n");
+            }
+        }
     }
 
     @Command(shortDescription = "Damage Anatomy component for amount", runOnServer = true)
@@ -96,11 +116,18 @@ public class AnatomySystem extends BaseComponentSystem implements UpdateSubscrib
         }
     }
 
+    @Command(shortDescription = "Revive Anatomy component for amount", runOnServer = true)
+    public void reviveAnatomyPart(@CommandParam("amount") int amount) {
+        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyPartComponent.class)) {
+            clientEntity.send(new DoAnatomyReviveEvent(amount));
+        }
+    }
+
     @Command(shortDescription = "Shows Anatomy component health", runOnServer = true)
     public void getAnatomyPartHealth() {
         for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyPartComponent.class)) {
             AnatomyPartComponent part = clientEntity.getComponent(AnatomyPartComponent.class);
-            logger.info(part.name + " has " + part.health + " points of health!\n");
+            logger.info(part.name + " has health: " + part.health + "/" + part.maxHealth + "\n");
         }
     }
 }
