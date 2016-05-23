@@ -15,8 +15,6 @@
  */
 package org.terasology.anatomy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.terasology.network.Replicate;
 
 /**
@@ -24,9 +22,6 @@ import org.terasology.network.Replicate;
  * HandsComponent, etc.
  */
 public class AnatomyPart {
-
-    private static final Logger logger = LoggerFactory.getLogger(AnatomySystem.class);
-
     /**
      * Used to determine if this limb needs to be "revived".
      */
