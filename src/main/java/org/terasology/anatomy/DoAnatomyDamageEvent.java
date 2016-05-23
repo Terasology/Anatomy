@@ -29,6 +29,7 @@ public class DoAnatomyDamageEvent implements Event {
     private Prefab damageType;
     private EntityRef instigator;
     private EntityRef directCause;
+    private String targetPartName;
 
     public DoAnatomyDamageEvent(int amount) {
         this(amount, EngineDamageTypes.DIRECT.get());
@@ -40,6 +41,10 @@ public class DoAnatomyDamageEvent implements Event {
 
     public DoAnatomyDamageEvent(int amount, Prefab damageType, EntityRef instigator) {
         this(amount, damageType, instigator, EntityRef.NULL);
+    }
+
+    public DoAnatomyDamageEvent(int amount, Prefab damageType, EntityRef instigator, String targetPartName) {
+        this(amount, targetPartName, damageType, instigator, EntityRef.NULL);
     }
 
     /**
@@ -55,8 +60,27 @@ public class DoAnatomyDamageEvent implements Event {
         this.directCause = directCause;
     }
 
+    /**
+     * @param amount            The amount of anatomy damage being caused
+     * @param targetPartName    The name of the anatomy being dealt damage to
+     * @param damageType        The type of the damage being dealt
+     * @param instigator        The instigator of the damage (which entity caused it)
+     * @param directCause       Tool used to cause the damage
+     */
+    public DoAnatomyDamageEvent(int amount, String targetPartName, Prefab damageType, EntityRef instigator, EntityRef directCause) {
+        this.amount = amount;
+        this.targetPartName = targetPartName;
+        this.damageType = damageType;
+        this.instigator = instigator;
+        this.directCause = directCause;
+    }
+
     public int getAmount() {
         return amount;
+    }
+
+    public String getTargetPartName() {
+        return targetPartName;
     }
 
     public EntityRef getInstigator() {

@@ -15,14 +15,18 @@
  */
 package org.terasology.anatomy;
 
-import org.terasology.entitySystem.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.network.Replicate;
 
 /**
  * Note that later, this will be divided into more concrete components like LegsComponent, ArmsComponent,
  * HandsComponent, etc.
  */
-public class AnatomyPartComponent implements Component {
+public class AnatomyPart {
+
+    private static final Logger logger = LoggerFactory.getLogger(AnatomySystem.class);
+
     /**
      * Used to determine if this limb needs to be "revived".
      */

@@ -18,36 +18,17 @@ package org.terasology.anatomy;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.Event;
 
-/**
- * Send this event to an entity to revive its anatomy part(s).
- * Will be differentiated from DoHealEvent in the future.
- */
-public class DoAnatomyReviveEvent implements Event {
-    private int amount;
-    private String targetPartName;
+public class DoAnatomyDeadEvent implements Event {
+    private AnatomyPart part;
     private EntityRef instigator;
 
-    public DoAnatomyReviveEvent(int amount) {
-        this(amount, EntityRef.NULL);
-    }
-
-    public DoAnatomyReviveEvent(int amount, EntityRef instigator) {
-        this.amount = amount;
+    public DoAnatomyDeadEvent(AnatomyPart part, EntityRef instigator) {
+        this.part = part;
         this.instigator = instigator;
     }
 
-    public DoAnatomyReviveEvent(int amount, String targetPartName, EntityRef instigator) {
-        this.amount = amount;
-        this.targetPartName = targetPartName;
-        this.instigator = instigator;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public String getTargetPartName() {
-        return targetPartName;
+    public AnatomyPart getPart() {
+        return part;
     }
 
     public EntityRef getInstigator() {

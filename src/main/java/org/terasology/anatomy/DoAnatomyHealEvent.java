@@ -24,6 +24,7 @@ import org.terasology.entitySystem.event.Event;
  */
 public class DoAnatomyHealEvent implements Event {
     private int amount;
+    private String targetPartName;
     private EntityRef instigator;
 
     public DoAnatomyHealEvent(int amount) {
@@ -35,8 +36,18 @@ public class DoAnatomyHealEvent implements Event {
         this.instigator = instigator;
     }
 
+    public DoAnatomyHealEvent(int amount, String targetPartName, EntityRef instigator) {
+        this.amount = amount;
+        this.targetPartName = targetPartName;
+        this.instigator = instigator;
+    }
+
     public int getAmount() {
         return amount;
+    }
+
+    public String getTargetPartName() {
+        return targetPartName;
     }
 
     public EntityRef getInstigator() {
