@@ -15,23 +15,12 @@
  */
 package org.terasology.anatomy;
 
-import org.terasology.entitySystem.Component;
 import com.google.common.collect.Lists;
 import java.util.List;
+import org.terasology.entitySystem.Component;
+import org.terasology.entitySystem.entity.EntityRef;
 
 public class AnatomyComponent implements Component {
-    public List<String> partNames = Lists.newArrayList();
-    public List<Integer> maxHealths = Lists.newArrayList();
-    public List<Integer> healthRegens = Lists.newArrayList();
-
-    public List<AnatomyPart> parts = Lists.newArrayList(); // Temporary for testing.
-
-
-
-    //public String[] partNames;
-    //public int[] maxHealths;
-    //public int[] healthRegens;
-
-    //public AnatomyPart[] parts;
-
+    // Keep a list of EntityRefs to the anatomy parts.
+    public List<EntityRef> aParts = Lists.newArrayList();
 }

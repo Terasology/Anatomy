@@ -15,13 +15,16 @@
  */
 package org.terasology.anatomy;
 
+import org.terasology.entitySystem.Component;
 import org.terasology.network.Replicate;
+import org.terasology.reflection.MappedContainer;
 
 /**
  * Note that later, this will be divided into more concrete components like LegsComponent, ArmsComponent,
  * HandsComponent, etc.
  */
-public class AnatomyPart {
+@MappedContainer
+public class AnatomyPartComponent implements Component {
     /**
      * Used to determine if this limb needs to be "revived".
      */
@@ -31,7 +34,7 @@ public class AnatomyPart {
     public String name = "Anatomy Part Name";
 
     @Replicate
-    public int health = 100;
+    public int health = 100; // TODO: Replace this with HealthComponent.
 
     @Replicate
     public int maxHealth = 100;

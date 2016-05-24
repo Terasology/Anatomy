@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.anatomy;
+package org.terasology.anatomy.events;
 
+import org.terasology.anatomy.AnatomyPartComponent;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.Event;
 
 public class DoAnatomyDeadEvent implements Event {
-    private AnatomyPart part;
+    private AnatomyPartComponent part;
     private EntityRef instigator;
 
-    public DoAnatomyDeadEvent(AnatomyPart part, EntityRef instigator) {
+    public DoAnatomyDeadEvent(AnatomyPartComponent part, EntityRef instigator) {
         this.part = part;
         this.instigator = instigator;
     }
 
-    public AnatomyPart getPart() {
+    public AnatomyPartComponent getPart() {
         return part;
     }
 
