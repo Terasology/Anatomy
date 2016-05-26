@@ -23,11 +23,11 @@ import org.terasology.reflection.MappedContainer;
  * Note that later, this will be divided into more concrete components like LegsComponent, ArmsComponent,
  * HandsComponent, etc.
  */
-@MappedContainer
-public class AnatomyPartComponent implements Component {
+public final class AnatomyPartComponent implements Component {
     /**
      * Used to determine if this limb needs to be "revived".
      */
+    @Replicate
     public boolean isAlive = true;
 
     @Replicate

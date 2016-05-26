@@ -19,8 +19,12 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.network.Replicate;
 
-public class AnatomyComponent implements Component {
+// For some reason, this is not being saved to disk.
+public final class AnatomyComponent implements Component {
+
     // Keep a list of EntityRefs to the anatomy parts.
+    @Replicate
     public List<EntityRef> aParts = Lists.newArrayList();
 }
