@@ -27,4 +27,8 @@ public final class AnatomyComponent implements Component {
     // Keep a list of EntityRefs to the anatomy parts.
     @Replicate
     public List<EntityRef> aParts = Lists.newArrayList();
+
+    // This will store a list of the anatomy prefab names to be created with this creature.
+    @Replicate
+    public List<String> aPrefabNames = Lists.newArrayList();
 }

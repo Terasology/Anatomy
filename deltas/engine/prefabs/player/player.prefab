@@ -1,4 +1,10 @@
 {
   "Anatomy": {
+    "aPrefabNames" : [
+      "anatomy:humanHead",
+      "anatomy:humanBody",
+      "anatomy:humanArms",
+      "anatomy:humanLegs"
+    ]
   }
 }

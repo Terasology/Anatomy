@@ -59,18 +59,13 @@ public class AnatomySystem extends BaseComponentSystem {
     }
 
     // Create anatomy parts for a human character.
-    private void createHumanAnatomy(EntityRef player)
-    {
-        EntityRef head = entityManager.create("anatomy:humanHead");
-        EntityRef body = entityManager.create("anatomy:humanBody");
-        EntityRef arms = entityManager.create("anatomy:humanArms");
-        EntityRef legs = entityManager.create("anatomy:humanLegs");
-
+    private void createHumanAnatomy(EntityRef player) {
         AnatomyComponent anatomy = player.getComponent(AnatomyComponent.class);
-        anatomy.aParts.add(head);
-        anatomy.aParts.add(body);
-        anatomy.aParts.add(legs);
-        anatomy.aParts.add(arms);
+
+        // Read the prefab names and use them to instantiate the anatomy part entities.
+        for (int i = 0; i < anatomy.aPrefabNames.size(); i++) {
+            anatomy.aParts.add(entityManager.create(anatomy.aPrefabNames.get(i)));
+        }
 
         player.saveComponent(anatomy);
     }
@@ -124,8 +119,7 @@ public class AnatomySystem extends BaseComponentSystem {
 
             entity.saveComponent(comp);
         }
-        else
-        {
+        else {
             logger.info(comp.name + " is already alive.");
         }
     }
@@ -152,8 +146,6 @@ public class AnatomySystem extends BaseComponentSystem {
 
     // The following commands are used for debugging.
 
-    // For this current revision, this command needs to be run before the Anatomy system is up and running properly.
-    // This is temporary until I figure out why OnPlayerSpawnedEvent is not being detected.
     @Command(shortDescription = "Create all the Anatomy parts", runOnServer = true)
     public void createAnatomyParts() {
 
