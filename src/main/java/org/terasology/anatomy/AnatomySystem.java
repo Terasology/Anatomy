@@ -58,7 +58,7 @@ public class AnatomySystem extends BaseComponentSystem {
         createHumanAnatomy(player);
     }
 
-    // Create anatomy parts for a human character.
+    // Create anatomy parts for a human or player character.
     private void createHumanAnatomy(EntityRef player) {
         AnatomyComponent anatomy = player.getComponent(AnatomyComponent.class);
 
@@ -82,7 +82,7 @@ public class AnatomySystem extends BaseComponentSystem {
         if (comp.isAlive) {
             comp.health -= event.getAmount();
 
-            logger.info(comp.name + " has taken " + event.getAmount() + " points of damage!");
+            logger.info(entity.toString() + "'s " + comp.name + " has taken " + event.getAmount() + " points of damage!");
 
             if (comp.health <= 0) {
                 // Send event indicating that this anatomy part is dead.
