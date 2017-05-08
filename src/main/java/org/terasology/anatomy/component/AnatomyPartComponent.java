@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 MovingBlocks
+ * Copyright 2017 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.anatomy;
+package org.terasology.anatomy.component;
 
 import org.terasology.entitySystem.Component;
 import org.terasology.network.Replicate;
@@ -30,8 +30,17 @@ public final class AnatomyPartComponent implements Component {
     @Replicate
     public boolean isAlive = true;
 
+    /**
+     * Name to be used as argument in commands (no spaces for ease of comparing).
+     */
     @Replicate
-    public String name = "Anatomy Part Name";
+    public String name = "Anatomy Part Name Reference";
+
+    /**
+     * Display name of the anatomy part.
+     */
+    @Replicate
+    public String displayName = "Anatomy Part Name";
 
     @Replicate
     public int health = 100; // TODO: Replace this with HealthComponent.

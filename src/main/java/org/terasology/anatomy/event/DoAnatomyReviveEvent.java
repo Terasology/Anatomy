@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 MovingBlocks
+ * Copyright 2017 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.anatomy.events;
+package org.terasology.anatomy.event;
 
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.Event;
 
 /**
- * Send this event to an entity to heal its anatomy part(s).
+ * Send this event to an entity to revive its anatomy part(s).
  * Will be differentiated from DoHealEvent in the future.
  */
-public class DoAnatomyHealEvent implements Event {
+public class DoAnatomyReviveEvent implements Event {
     private int amount;
     private String targetPartName;
     private EntityRef instigator;
 
-    public DoAnatomyHealEvent(int amount) {
+    public DoAnatomyReviveEvent(int amount) {
         this(amount, EntityRef.NULL);
     }
 
-    public DoAnatomyHealEvent(int amount, EntityRef instigator) {
+    public DoAnatomyReviveEvent(int amount, EntityRef instigator) {
         this.amount = amount;
         this.instigator = instigator;
     }
 
-    public DoAnatomyHealEvent(int amount, String targetPartName, EntityRef instigator) {
+    public DoAnatomyReviveEvent(int amount, String targetPartName, EntityRef instigator) {
         this.amount = amount;
         this.targetPartName = targetPartName;
         this.instigator = instigator;

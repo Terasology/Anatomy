@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 MovingBlocks
+ * Copyright 2017 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.anatomy;
+package org.terasology.anatomy.component;
 
-import com.google.common.collect.Lists;
-import java.util.List;
-import org.terasology.entitySystem.Component;
-import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.network.Replicate;
+import org.terasology.reflection.MappedContainer;
 
-// For some reason, this is not being saved to disk.
-public final class AnatomyComponent implements Component {
-
-    // Keep a list of EntityRefs to the anatomy parts.
+@MappedContainer
+public class AnatomyPrefab {
     @Replicate
-    public List<EntityRef> aParts = Lists.newArrayList();
+    public String name = "Body part name reference";
 
-    // This will store a list of the anatomy prefab names to be created with this creature.
     @Replicate
-    public List<String> aPrefabNames = Lists.newArrayList();
+    public String displayName = "Body part name";
+
+    @Replicate
+    public String prefabName = "";
 }

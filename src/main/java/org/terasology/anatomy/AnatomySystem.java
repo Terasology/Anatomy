@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 MovingBlocks
+ * Copyright 2017 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,12 @@ package org.terasology.anatomy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.anatomy.events.DoAnatomyDamageEvent;
-import org.terasology.anatomy.events.DoAnatomyDeadEvent;
-import org.terasology.anatomy.events.DoAnatomyHealEvent;
-import org.terasology.anatomy.events.DoAnatomyReviveEvent;
+import org.terasology.anatomy.component.AnatomyComponent;
+import org.terasology.anatomy.component.AnatomyPartComponent;
+import org.terasology.anatomy.event.DoAnatomyDamageEvent;
+import org.terasology.anatomy.event.DoAnatomyDeadEvent;
+import org.terasology.anatomy.event.DoAnatomyHealEvent;
+import org.terasology.anatomy.event.DoAnatomyReviveEvent;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
@@ -52,7 +54,7 @@ public class AnatomySystem extends BaseComponentSystem {
     @In
     private EntityRef playerRef;
 
-    @ReceiveEvent(components = InventoryComponent.class)
+    @ReceiveEvent
     public void onPlayerCreationEvent(OnPlayerSpawnedEvent event, EntityRef player) {
         logger.info("Player creation caught!");
         createHumanAnatomy(player);
@@ -64,7 +66,12 @@ public class AnatomySystem extends BaseComponentSystem {
 
         // Read the prefab names and use them to instantiate the anatomy part entities.
         for (int i = 0; i < anatomy.aPrefabNames.size(); i++) {
-            anatomy.aParts.add(entityManager.create(anatomy.aPrefabNames.get(i)));
+            EntityRef entityRef = entityManager.create(anatomy.aPrefabNames.get(i).prefabName);
+            AnatomyPartComponent part = entityRef.getComponent(AnatomyPartComponent.class);
+            part.name = anatomy.aPrefabNames.get(i).name;
+            part.displayName = anatomy.aPrefabNames.get(i).displayName;
+            entityRef.saveComponent(part);
+            anatomy.aParts.add(entityRef);
         }
 
         player.saveComponent(anatomy);
@@ -82,7 +89,7 @@ public class AnatomySystem extends BaseComponentSystem {
         if (comp.isAlive) {
             comp.health -= event.getAmount();
 
-            logger.info(entity.toString() + "'s " + comp.name + " has taken " + event.getAmount() + " points of damage!");
+            logger.info(entity.toString() + "'s " + comp.displayName + " has taken " + event.getAmount() + " points of damage!");
 
             if (comp.health <= 0) {
                 // Send event indicating that this anatomy part is dead.
@@ -97,7 +104,7 @@ public class AnatomySystem extends BaseComponentSystem {
     public void onDead(DoAnatomyDeadEvent event, EntityRef entity) {
         event.getPart().health = 0;
         event.getPart().isAlive = false;
-        logger.info(event.getPart().name + " has been destroyed!");
+        logger.info(event.getPart().displayName + " has been destroyed!");
 
         entity.saveComponent(event.getPart());
     }
@@ -115,12 +122,12 @@ public class AnatomySystem extends BaseComponentSystem {
             comp.isAlive = true;
 
             heal(comp, event.getAmount());
-            logger.info(comp.name + " has been revived with " + comp.health + " health!");
+            logger.info(comp.displayName + " has been revived with " + comp.health + " health!");
 
             entity.saveComponent(comp);
         }
         else {
-            logger.info(comp.name + " is already alive.");
+            logger.info(comp.displayName + " is already alive.");
         }
     }
 
@@ -128,19 +135,19 @@ public class AnatomySystem extends BaseComponentSystem {
         if (part.isAlive && !part.isHealthFull()) {
             part.health += amount;
 
-            logger.info(part.name + " has recovered " + amount + " points of health!");
+            logger.info(part.displayName + " has recovered " + amount + " points of health!");
 
             if (part.health >= part.maxHealth) {
                 part.health = part.maxHealth;
 
-                logger.info(part.name + " is at max health!");
+                logger.info(part.displayName + " is at max health!");
             }
         }
         else if (part.isHealthFull()) {
-            logger.info(part.name + " is already at max health!");
+            logger.info(part.displayName + " is already at max health!");
         }
         else {
-            logger.info(part.name + " can't be healed as it's dead!");
+            logger.info(part.displayName + " can't be healed as it's dead!");
         }
     }
 
