@@ -1,8 +1,0 @@
-{
-    "AnatomyPart" : {
-        "name" : "Leg",
-        "health" : 40,
-        "maxHealth" : 40,
-        "healthRegen" : 1
-    }
-}

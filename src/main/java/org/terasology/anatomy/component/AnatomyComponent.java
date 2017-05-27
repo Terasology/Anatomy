@@ -15,23 +15,13 @@
  */
 package org.terasology.anatomy.component;
 
-import com.google.common.collect.Lists;
 import org.terasology.entitySystem.Component;
-import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.network.Replicate;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AnatomyComponent implements Component {
-    /**
-     * List of prefabs to create anatomy part entities.
-     */
     @Replicate
-    public List<AnatomyPrefab> aPrefabNames = Lists.newArrayList();
-
-    /**
-     * List of anatomy part entities
-     */
-    @Replicate
-    public List<EntityRef> aParts = Lists.newArrayList();
+    public Map<String, AnatomyPartTag> parts = new HashMap<>();
 }

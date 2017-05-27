@@ -18,11 +18,8 @@ package org.terasology.anatomy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.anatomy.component.AnatomyComponent;
-import org.terasology.anatomy.component.AnatomyPartComponent;
-import org.terasology.anatomy.event.DoAnatomyDamageEvent;
-import org.terasology.anatomy.event.DoAnatomyDeadEvent;
-import org.terasology.anatomy.event.DoAnatomyHealEvent;
-import org.terasology.anatomy.event.DoAnatomyReviveEvent;
+import org.terasology.anatomy.component.AnatomyPartTag;
+import org.terasology.anatomy.event.AnatomyPartImpactedEvent;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
@@ -32,9 +29,13 @@ import org.terasology.logic.delay.DelayManager;
 import org.terasology.logic.delay.PeriodicActionTriggeredEvent;
 import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.logic.console.commandSystem.annotations.CommandParam;
-import org.terasology.logic.inventory.InventoryComponent;
-import org.terasology.logic.players.event.OnPlayerSpawnedEvent;
+import org.terasology.logic.health.OnDamagedEvent;
 import org.terasology.registry.In;
+import org.terasology.utilities.random.FastRandom;
+import org.terasology.utilities.random.Random;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides a basic system for managing an entity's anatomy.
@@ -54,124 +55,25 @@ public class AnatomySystem extends BaseComponentSystem {
     @In
     private EntityRef playerRef;
 
-    @ReceiveEvent
-    public void onPlayerCreationEvent(OnPlayerSpawnedEvent event, EntityRef player) {
-        logger.info("Player creation caught!");
-        createHumanAnatomy(player);
-    }
-
-    // Create anatomy parts for a human or player character.
-    private void createHumanAnatomy(EntityRef player) {
-        AnatomyComponent anatomy = player.getComponent(AnatomyComponent.class);
-
-        // Read the prefab names and use them to instantiate the anatomy part entities.
-        for (int i = 0; i < anatomy.aPrefabNames.size(); i++) {
-            EntityRef entityRef = entityManager.create(anatomy.aPrefabNames.get(i).prefabName);
-            AnatomyPartComponent part = entityRef.getComponent(AnatomyPartComponent.class);
-            part.name = anatomy.aPrefabNames.get(i).name;
-            part.displayName = anatomy.aPrefabNames.get(i).displayName;
-            entityRef.saveComponent(part);
-            anatomy.aParts.add(entityRef);
-        }
-
-        player.saveComponent(anatomy);
-    }
+    private Random random = new FastRandom();
 
     @ReceiveEvent
-    public void onHealthRegenDelayCompletion(PeriodicActionTriggeredEvent event, EntityRef entityRef, AnatomyPartComponent part) {
-        if (event.getActionId().equals("Anatomy:RegenHealth")) {
-            //heal(part, part.healthRegen);
+    public void onDamage(OnDamagedEvent event, EntityRef entity, AnatomyComponent comp) {
+        if (comp != null) {
+            List<String> keys = new ArrayList<>(comp.parts.keySet());
+            // Randomly assign damage to a part, until positional damage is introduced.
+            AnatomyPartTag partTag = comp.parts.get(keys.get(random.nextInt(0, keys.size() - 1)));
+            entity.send(new AnatomyPartImpactedEvent(event.getDamageAmount(), partTag, event.getType(), event.getInstigator()));
         }
-    }
-
-    @ReceiveEvent(components = {AnatomyPartComponent.class})
-    public void onDamage(DoAnatomyDamageEvent event, EntityRef entity, AnatomyPartComponent comp) {
-        if (comp.isAlive) {
-            comp.health -= event.getAmount();
-
-            logger.info(entity.toString() + "'s " + comp.displayName + " has taken " + event.getAmount() + " points of damage!");
-
-            if (comp.health <= 0) {
-                // Send event indicating that this anatomy part is dead.
-                entity.send(new DoAnatomyDeadEvent(comp, event.getInstigator()));
-            }
-
-            entity.saveComponent(comp);
-        }
-    }
-
-    @ReceiveEvent(components = {AnatomyPartComponent.class})
-    public void onDead(DoAnatomyDeadEvent event, EntityRef entity) {
-        event.getPart().health = 0;
-        event.getPart().isAlive = false;
-        logger.info(event.getPart().displayName + " has been destroyed!");
-
-        entity.saveComponent(event.getPart());
-    }
-
-    @ReceiveEvent(components = {AnatomyPartComponent.class})
-    public void onHeal(DoAnatomyHealEvent event, EntityRef entity, AnatomyPartComponent comp) {
-        heal(comp, event.getAmount());
-
-        entity.saveComponent(comp);
-    }
-
-    @ReceiveEvent(components = {AnatomyPartComponent.class})
-    public void onRevive(DoAnatomyReviveEvent event, EntityRef entity, AnatomyPartComponent comp) {
-        if (!comp.isAlive) {
-            comp.isAlive = true;
-
-            heal(comp, event.getAmount());
-            logger.info(comp.displayName + " has been revived with " + comp.health + " health!");
-
-            entity.saveComponent(comp);
-        }
-        else {
-            logger.info(comp.displayName + " is already alive.");
-        }
-    }
-
-    private void heal(AnatomyPartComponent part, int amount) {
-        if (part.isAlive && !part.isHealthFull()) {
-            part.health += amount;
-
-            logger.info(part.displayName + " has recovered " + amount + " points of health!");
-
-            if (part.health >= part.maxHealth) {
-                part.health = part.maxHealth;
-
-                logger.info(part.displayName + " is at max health!");
-            }
-        }
-        else if (part.isHealthFull()) {
-            logger.info(part.displayName + " is already at max health!");
-        }
-        else {
-            logger.info(part.displayName + " can't be healed as it's dead!");
-        }
-    }
-
-    // The following commands are used for debugging.
-
-    @Command(shortDescription = "Create all the Anatomy parts", runOnServer = true)
-    public void createAnatomyParts() {
-
-        EntityRef player = EntityRef.NULL;
-        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyComponent.class)) {
-            player = clientEntity;
-            break;
-        }
-
-        createHumanAnatomy(player);
     }
 
     @Command(shortDescription = "Damage Anatomy part for amount", runOnServer = true)
     public void dmgAnatomyPart(@CommandParam("name") String partName, @CommandParam("amount") int amount) {
         for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyComponent.class)) {
-            for (EntityRef partEntityRef : clientEntity.getComponent(AnatomyComponent.class).aParts) {
-                if (partEntityRef.getComponent(AnatomyPartComponent.class).name.equalsIgnoreCase(partName)) {
-                    partEntityRef.send(new DoAnatomyDamageEvent(amount, partName, null, null, null));
-                }
+            AnatomyComponent anatomyComponent = clientEntity.getComponent(AnatomyComponent.class);
+            AnatomyPartTag partTag = anatomyComponent.parts.get(partName);
+            if (partTag != null) {
+                clientEntity.send(new AnatomyPartImpactedEvent(amount, partTag));
             }
         }
     }
@@ -179,68 +81,12 @@ public class AnatomySystem extends BaseComponentSystem {
     @Command(shortDescription = "Damage ALL Anatomy parts for amount", runOnServer = true)
     public void dmgAnatomyPartAll(@CommandParam("amount") int amount) {
         for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyComponent.class)) {
-            for (EntityRef partEntityRef : clientEntity.getComponent(AnatomyComponent.class).aParts) {
-                partEntityRef.send(new DoAnatomyDamageEvent(amount));
+            AnatomyComponent anatomyComponent = clientEntity.getComponent(AnatomyComponent.class);
+            List<String> keys = new ArrayList<>(anatomyComponent.parts.keySet());
+            for (String key : keys) {
+                AnatomyPartTag partTag = anatomyComponent.parts.get(key);
+                clientEntity.send(new AnatomyPartImpactedEvent(amount, partTag));
             }
-        }
-    }
-
-    @Command(shortDescription = "Heal Anatomy part for amount", runOnServer = true)
-    public void healAnatomyPart(@CommandParam("name") String partName, @CommandParam("amount") int amount) {
-        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyComponent.class)) {
-            for (EntityRef partEntityRef : clientEntity.getComponent(AnatomyComponent.class).aParts) {
-                if (partEntityRef.getComponent(AnatomyPartComponent.class).name.equalsIgnoreCase(partName)) {
-                    partEntityRef.send(new DoAnatomyHealEvent(amount, partName, null));
-                }
-            }
-        }
-    }
-
-    @Command(shortDescription = "Heal ALL Anatomy parts for amount", runOnServer = true)
-    public void healAnatomyPartAll(@CommandParam("amount") int amount) {
-        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyComponent.class)) {
-            for (EntityRef partEntityRef : clientEntity.getComponent(AnatomyComponent.class).aParts) {
-                partEntityRef.send(new DoAnatomyHealEvent(amount));
-            }
-        }
-    }
-
-    @Command(shortDescription = "Revive Anatomy component for amount", runOnServer = true)
-    public void reviveAnatomyPart(@CommandParam("name") String partName, @CommandParam("amount") int amount) {
-        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyComponent.class)) {
-            for (EntityRef partEntityRef : clientEntity.getComponent(AnatomyComponent.class).aParts) {
-                if (partEntityRef.getComponent(AnatomyPartComponent.class).name.equalsIgnoreCase(partName)) {
-                    partEntityRef.send(new DoAnatomyReviveEvent(amount, partName, null));
-                }
-            }
-        }
-    }
-
-    @Command(shortDescription = "Show all Anatomy parts' health", runOnServer = true)
-    public void getAnatomyPartHealth() {
-        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyComponent.class)) {
-
-            AnatomyComponent aComponent = clientEntity.getComponent(AnatomyComponent.class);
-            // TEST Stuff.
-            logger.info(clientEntity.toString() + " has the following anatomy health values:");
-
-            for (EntityRef partEntityRef : clientEntity.getComponent(AnatomyComponent.class).aParts) {
-                AnatomyPartComponent part = partEntityRef.getComponent(AnatomyPartComponent.class);
-                logger.info(part.name + " has health: " + part.health + "/" + part.maxHealth);
-            }
-        }
-    }
-
-    @Command(shortDescription = "Manually save all Anatomy parts' stats and statuses", runOnServer = true)
-    public void saveAnatomy() {
-        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyComponent.class)) {
-            AnatomyComponent aComponent = clientEntity.getComponent(AnatomyComponent.class);
-            clientEntity.saveComponent(aComponent);
-        }
-
-        for (EntityRef limbEntity : entityManager.getEntitiesWith(AnatomyPartComponent.class)) {
-            AnatomyPartComponent aPartComponent = limbEntity.getComponent(AnatomyPartComponent.class);
-            limbEntity.saveComponent(aPartComponent);
         }
     }
 }

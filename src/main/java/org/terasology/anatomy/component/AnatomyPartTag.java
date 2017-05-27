@@ -19,13 +19,10 @@ import org.terasology.network.Replicate;
 import org.terasology.reflection.MappedContainer;
 
 @MappedContainer
-public class AnatomyPrefab {
+public class AnatomyPartTag {
+    /**
+     * Name of the anatomy part.
+     */
     @Replicate
-    public String name = "Body part name reference";
-
-    @Replicate
-    public String displayName = "Body part name";
-
-    @Replicate
-    public String prefabName = "";
+    public String name = "";
 }
