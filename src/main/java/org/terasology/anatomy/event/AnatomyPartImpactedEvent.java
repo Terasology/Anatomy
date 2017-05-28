@@ -54,4 +54,16 @@ public class AnatomyPartImpactedEvent implements Event {
         this.directCause = directCause;
         this.targetPart = targetPart;
     }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public Prefab getDamageType() {
+        return damageType;
+    }
+
+    public AnatomyPartTag getTargetPart() {
+        return targetPart;
+    }
 }

@@ -1,6 +1,6 @@
 {
     "Anatomy": {
-        "parts": [
+        "parts": {
             "head": {
                 "name": "head"
             },
@@ -19,6 +19,6 @@
             "rightLeg": {
                 "name": "right leg"
             }
-        ]
+        }
     }
 }
