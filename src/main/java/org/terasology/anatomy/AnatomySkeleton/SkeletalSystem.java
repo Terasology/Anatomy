@@ -16,18 +16,13 @@
 package org.terasology.anatomy.AnatomySkeleton;
 
 import com.google.common.collect.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.terasology.anatomy.AnatomySkeleton.component.BoneComponent;
 import org.terasology.anatomy.AnatomySkeleton.component.BrokenBoneComponent;
 import org.terasology.anatomy.AnatomySkeleton.event.BoneHealthChangedEvent;
 import org.terasology.anatomy.component.AnatomyComponent;
-import org.terasology.anatomy.component.PartEffectOutcome;
 import org.terasology.anatomy.component.PartSkeletalDetails;
 import org.terasology.anatomy.event.AnatomyEffectAddedEvent;
 import org.terasology.anatomy.event.AnatomyEffectRemovedEvent;
-import org.terasology.anatomy.event.AnatomyPartImpactedEvent;
-import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
@@ -35,12 +30,7 @@ import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.logic.console.commandSystem.annotations.Sender;
 import org.terasology.network.ClientComponent;
-import org.terasology.registry.In;
-import org.terasology.utilities.random.FastRandom;
-import org.terasology.utilities.random.Random;
-import sun.security.provider.SHA;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +40,6 @@ import java.util.Map;
  */
 @RegisterSystem
 public class SkeletalSystem extends BaseComponentSystem {
-    private static final Logger logger = LoggerFactory.getLogger(SkeletalSystem.class);
-
     private Map<Integer, String> severityNameMap = new HashMap<>();
 
     private float DAMAGED_BONE_THRESHOLD = 0.6f;

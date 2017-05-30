@@ -15,8 +15,6 @@
  */
 package org.terasology.anatomy.AnatomySkeleton;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.terasology.anatomy.AnatomySkeleton.component.BoneComponent;
 import org.terasology.anatomy.AnatomySkeleton.event.BoneHealthChangedEvent;
 import org.terasology.anatomy.component.AnatomyComponent;
@@ -45,7 +43,6 @@ public class SkeletalAuthoritySystem extends BaseComponentSystem implements Upda
     @In
     private EntityManager entityManager;
 
-    private static final Logger logger = LoggerFactory.getLogger(SkeletalAuthoritySystem.class);
     private float bluntDamageMultiplier = 1.5f;
 
     @Override

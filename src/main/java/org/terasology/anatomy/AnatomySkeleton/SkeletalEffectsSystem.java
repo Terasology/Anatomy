@@ -15,8 +15,6 @@
  */
 package org.terasology.anatomy.AnatomySkeleton;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.terasology.anatomy.AnatomySkeleton.component.BoneComponent;
 import org.terasology.anatomy.AnatomySkeleton.component.BrokenBoneComponent;
 import org.terasology.anatomy.component.PartEffectOutcome;
@@ -34,14 +32,13 @@ import java.util.Map;
  */
 @RegisterSystem
 public class SkeletalEffectsSystem extends BaseComponentSystem {
-    private static final Logger logger = LoggerFactory.getLogger(SkeletalEffectsSystem.class);
-
     @ReceiveEvent
     public void modifySpeed(GetMaxSpeedEvent event, EntityRef entityRef, BoneComponent boneComponent, BrokenBoneComponent brokenBoneComponent) {
         // Loop over each severity of the BrokenBone effect.
         for (Map.Entry<String, List<String>> brokenBoneEntry : brokenBoneComponent.parts.entrySet()) {
             // Loop over each part corresponding to a particular severity.
             for (String brokenBonePart : brokenBoneEntry.getValue()) {
+                //Get the outcome corresponding to the part and its effect severity.
                 PartEffectOutcome partEffectOutcome = boneComponent.partEffectOutcomes.get(brokenBonePart + ":" + brokenBoneEntry.getKey());
                 if (partEffectOutcome.outcome.equals("modifySpeed")) {
                     event.multiply(partEffectOutcome.magnitude);

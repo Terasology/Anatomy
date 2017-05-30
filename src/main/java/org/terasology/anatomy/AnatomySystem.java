@@ -15,9 +15,6 @@
  */
 package org.terasology.anatomy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.terasology.anatomy.AnatomySkeleton.component.BrokenBoneComponent;
 import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.AnatomyPartTag;
 import org.terasology.anatomy.event.AnatomyEffectAddedEvent;
@@ -28,11 +25,9 @@ import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.logic.console.commandSystem.annotations.Sender;
-import org.terasology.logic.delay.DelayManager;
-import org.terasology.logic.delay.PeriodicActionTriggeredEvent;
 import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.logic.console.commandSystem.annotations.CommandParam;
+import org.terasology.logic.console.commandSystem.annotations.Sender;
 import org.terasology.logic.health.OnDamagedEvent;
 import org.terasology.network.ClientComponent;
 import org.terasology.registry.In;
@@ -49,17 +44,8 @@ import java.util.Map;
  */
 @RegisterSystem
 public class AnatomySystem extends BaseComponentSystem {
-    private static final Logger logger = LoggerFactory.getLogger(AnatomySystem.class);
-
     @In
     private EntityManager entityManager;
-
-    @In
-    private DelayManager delayManager;
-
-    // USED only for TESTING, with the assumption that ONLY the local player has the AnatomyComponent attached.
-    @In
-    private EntityRef playerRef;
 
     private Random random = new FastRandom();
 
@@ -70,7 +56,6 @@ public class AnatomySystem extends BaseComponentSystem {
             // Randomly assign damage to a part, until positional damage is introduced.
             AnatomyPartTag partTag = comp.parts.get(keys.get(random.nextInt(0, keys.size() - 1)));
             entity.send(new AnatomyPartImpactedEvent(event.getDamageAmount(), partTag, event.getType(), event.getInstigator()));
-            logger.info(String.valueOf(entity.hasComponent(BrokenBoneComponent.class)));
         }
     }
 
@@ -86,7 +71,6 @@ public class AnatomySystem extends BaseComponentSystem {
     @ReceiveEvent
     public void onAnatomyEffectRemoved(AnatomyEffectRemovedEvent event, EntityRef entityRef, AnatomyComponent component) {
         List<String> partEffects = component.parts.get(event.partId).effects;
-        logger.info(partEffects.toString());
         partEffects.remove(event.effectName);
         entityRef.saveComponent(component);
     }
