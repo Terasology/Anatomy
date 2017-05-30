@@ -24,5 +24,5 @@ import java.util.Map;
 
 public class BrokenBoneComponent implements Component {
     @Replicate
-    public Map<Integer, List<String>> parts = new HashMap<>();
+    public Map<String, List<String>> parts = new HashMap<>();
 }

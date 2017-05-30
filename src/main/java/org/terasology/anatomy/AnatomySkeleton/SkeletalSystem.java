@@ -46,8 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A skeletal system which works with Anatomy.
- * Provides basic effects.
+ * A skeletal system which works with Anatomy. Provides a basic bone breaking effect with 3 levels of severity.
  */
 @RegisterSystem
 public class SkeletalSystem extends BaseComponentSystem {
@@ -81,20 +80,20 @@ public class SkeletalSystem extends BaseComponentSystem {
             entityRef.addComponent(new BrokenBoneComponent());
         }
         BrokenBoneComponent brokenBoneComponent = entityRef.getComponent(BrokenBoneComponent.class);
-        for (Map.Entry<Integer, List<String>> partsOfSeverity : brokenBoneComponent.parts.entrySet()) {
+        for (Map.Entry<String, List<String>> partsOfSeverity : brokenBoneComponent.parts.entrySet()) {
             if (partsOfSeverity.getValue().contains(partId)) {
-                if (partsOfSeverity.getKey() == severity) {
+                if (Integer.parseInt(partsOfSeverity.getKey()) == severity) {
                     return;
                 } else {
                     partsOfSeverity.getValue().remove(partId);
-                    entityRef.send(new AnatomyEffectRemovedEvent(partId, severityNameMap.get(partsOfSeverity.getKey())));
+                    entityRef.send(new AnatomyEffectRemovedEvent(partId, severityNameMap.get(Integer.parseInt(partsOfSeverity.getKey()))));
                 }
             }
         }
-        if (brokenBoneComponent.parts.containsKey(severity)) {
-            brokenBoneComponent.parts.get(severity).add(partId);
+        if (brokenBoneComponent.parts.containsKey(String.valueOf(severity))) {
+            brokenBoneComponent.parts.get(String.valueOf(severity)).add(partId);
         } else {
-            brokenBoneComponent.parts.put(severity, Lists.newArrayList(partId));
+            brokenBoneComponent.parts.put(String.valueOf(severity), Lists.newArrayList(partId));
         }
         entityRef.saveComponent(brokenBoneComponent);
         entityRef.send(new AnatomyEffectAddedEvent(partId, severityNameMap.get(severity)));
@@ -103,13 +102,13 @@ public class SkeletalSystem extends BaseComponentSystem {
     private void removeEffect(EntityRef entityRef, String partId) {
         BrokenBoneComponent brokenBoneComponent = entityRef.getComponent(BrokenBoneComponent.class);
         if (brokenBoneComponent != null) {
-            for (Map.Entry<Integer, List<String>> partsOfSeverity : brokenBoneComponent.parts.entrySet()) {
+            for (Map.Entry<String, List<String>> partsOfSeverity : brokenBoneComponent.parts.entrySet()) {
                 if (partsOfSeverity.getValue().remove(partId)) {
-                    entityRef.send(new AnatomyEffectRemovedEvent(partId, severityNameMap.get(partsOfSeverity.getKey())));
+                    entityRef.send(new AnatomyEffectRemovedEvent(partId, severityNameMap.get(Integer.parseInt(partsOfSeverity.getKey()))));
                 };
             }
+            entityRef.saveComponent(brokenBoneComponent);
         }
-        entityRef.saveComponent(brokenBoneComponent);
     }
 
     private int getEffectSeverity(String partId, BoneComponent boneComponent) {

@@ -43,30 +43,30 @@
             }
         },
         "partEffectOutcomes": {
-            "leftLeg": [
-                {
-                    "severity": 1,
-                    "outcome": "modifySpeed",
-                    "magnitude": "0.9"
-                },
-                {
-                    "severity": 2,
-                    "outcome": "modifySpeed",
-                    "magnitude": "0.75"
-                }
-            ],
-            "rightLeg": [
-                {
-                    "severity": 1,
-                    "outcome": "modifySpeed",
-                    "magnitude": "0.9"
-                },
-                {
-                    "severity": 2,
-                    "outcome": "modifySpeed",
-                    "magnitude": "0.75"
-                }
-            ]
+            "leftLeg:1": {
+                "outcome": "modifySpeed",
+                "magnitude": 0.9
+            },
+            "leftLeg:2": {
+                "outcome": "modifySpeed",
+                "magnitude": 0.6
+            },
+            "leftLeg:3": {
+                "outcome": "modifySpeed",
+                "magnitude": 0.4
+            },
+            "rightLeg:1": {
+                "outcome": "modifySpeed",
+                "magnitude": 0.9
+            },
+            "rightLeg:2": {
+                "outcome": "modifySpeed",
+                "magnitude": 0.6
+            },
+            "rightLeg:3": {
+                "outcome": "modifySpeed",
+                "magnitude": 0.4
+            }
         }
     }
 }

@@ -35,5 +35,5 @@ public class BoneComponent implements Component {
     public Map<String, PartSkeletalDetails> parts = new HashMap<>();
 
     @Replicate
-    public Map<String, List<PartEffectOutcome>> partEffectOutcomes = new HashMap<>();
+    public Map<String, PartEffectOutcome> partEffectOutcomes = new HashMap<>();
 }

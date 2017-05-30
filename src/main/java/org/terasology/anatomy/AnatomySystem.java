@@ -17,6 +17,7 @@ package org.terasology.anatomy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.anatomy.AnatomySkeleton.component.BrokenBoneComponent;
 import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.AnatomyPartTag;
 import org.terasology.anatomy.event.AnatomyEffectAddedEvent;
@@ -69,6 +70,7 @@ public class AnatomySystem extends BaseComponentSystem {
             // Randomly assign damage to a part, until positional damage is introduced.
             AnatomyPartTag partTag = comp.parts.get(keys.get(random.nextInt(0, keys.size() - 1)));
             entity.send(new AnatomyPartImpactedEvent(event.getDamageAmount(), partTag, event.getType(), event.getInstigator()));
+            logger.info(String.valueOf(entity.hasComponent(BrokenBoneComponent.class)));
         }
     }
 
@@ -84,6 +86,7 @@ public class AnatomySystem extends BaseComponentSystem {
     @ReceiveEvent
     public void onAnatomyEffectRemoved(AnatomyEffectRemovedEvent event, EntityRef entityRef, AnatomyComponent component) {
         List<String> partEffects = component.parts.get(event.partId).effects;
+        logger.info(partEffects.toString());
         partEffects.remove(event.effectName);
         entityRef.saveComponent(component);
     }

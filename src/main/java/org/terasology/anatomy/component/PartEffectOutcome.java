@@ -23,10 +23,6 @@ import org.terasology.reflection.MappedContainer;
  */
 @MappedContainer
 public class PartEffectOutcome {
-    //The severity of the anatomy effect.
-    @Replicate
-    public int severity;
-
     // The outcome effect to be applied.
     @Replicate
     public String outcome = "";
