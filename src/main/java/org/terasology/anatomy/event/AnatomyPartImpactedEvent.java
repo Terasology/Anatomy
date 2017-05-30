@@ -21,6 +21,9 @@ import org.terasology.entitySystem.event.Event;
 import org.terasology.entitySystem.prefab.Prefab;
 import org.terasology.logic.health.EngineDamageTypes;
 
+/**
+ * This event is sent when an anatomy part is damaged.
+ */
 public class AnatomyPartImpactedEvent implements Event {
     private int amount;
     private Prefab damageType;

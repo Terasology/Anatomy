@@ -13,27 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.anatomy.component;
+package org.terasology.anatomy.event;
 
-import com.google.common.collect.Lists;
-import org.terasology.network.Replicate;
-import org.terasology.reflection.MappedContainer;
+import org.terasology.entitySystem.event.Event;
 
-import java.util.List;
+/**
+ * Sent when an anatomy system adds an effect to a body part.
+ */
+public class AnatomyEffectAddedEvent implements Event {
+    public String partId;
 
-@MappedContainer
-public class AnatomyPartTag {
-    /**
-     * Id of the anatomy part. Useful for multi-word names.
-     */
-    public String id = "";
+    public String effectName;
 
-    /**
-     * Name of the anatomy part.
-     */
-    @Replicate
-    public String name = "";
-
-    @Replicate
-    public List<String> effects = Lists.newArrayList();
+    public AnatomyEffectAddedEvent(String partId, String effectName) {
+        this.partId = partId;
+        this.effectName = effectName;
+    }
 }

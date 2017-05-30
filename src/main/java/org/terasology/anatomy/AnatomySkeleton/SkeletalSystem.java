@@ -24,6 +24,8 @@ import org.terasology.anatomy.AnatomySkeleton.event.BoneHealthChangedEvent;
 import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.PartEffectOutcome;
 import org.terasology.anatomy.component.PartSkeletalDetails;
+import org.terasology.anatomy.event.AnatomyEffectAddedEvent;
+import org.terasology.anatomy.event.AnatomyEffectRemovedEvent;
 import org.terasology.anatomy.event.AnatomyPartImpactedEvent;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -85,6 +87,7 @@ public class SkeletalSystem extends BaseComponentSystem {
                     return;
                 } else {
                     partsOfSeverity.getValue().remove(partId);
+                    entityRef.send(new AnatomyEffectRemovedEvent(partId, severityNameMap.get(partsOfSeverity.getKey())));
                 }
             }
         }
@@ -93,9 +96,8 @@ public class SkeletalSystem extends BaseComponentSystem {
         } else {
             brokenBoneComponent.parts.put(severity, Lists.newArrayList(partId));
         }
-        logger.info("ADD");
-        logger.info(String.valueOf(severity));
         entityRef.saveComponent(brokenBoneComponent);
+        entityRef.send(new AnatomyEffectAddedEvent(partId, severityNameMap.get(severity)));
     }
 
     private void removeEffect(EntityRef entityRef, String partId) {
@@ -103,10 +105,11 @@ public class SkeletalSystem extends BaseComponentSystem {
         if (brokenBoneComponent != null) {
             for (Map.Entry<Integer, List<String>> partsOfSeverity : brokenBoneComponent.parts.entrySet()) {
                 if (partsOfSeverity.getValue().remove(partId)) {
-                    logger.info("REMOVE");
+                    entityRef.send(new AnatomyEffectRemovedEvent(partId, severityNameMap.get(partsOfSeverity.getKey())));
                 };
             }
         }
+        entityRef.saveComponent(brokenBoneComponent);
     }
 
     private int getEffectSeverity(String partId, BoneComponent boneComponent) {
