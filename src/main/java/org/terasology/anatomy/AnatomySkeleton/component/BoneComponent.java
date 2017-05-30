@@ -15,11 +15,13 @@
  */
 package org.terasology.anatomy.AnatomySkeleton.component;
 
+import org.terasology.anatomy.component.PartEffectOutcome;
 import org.terasology.anatomy.component.PartSkeletalDetails;
 import org.terasology.entitySystem.Component;
 import org.terasology.network.Replicate;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,4 +33,7 @@ public class BoneComponent implements Component {
      */
     @Replicate
     public Map<String, PartSkeletalDetails> parts = new HashMap<>();
+
+    @Replicate
+    public Map<String, List<PartEffectOutcome>> partEffectOutcomes = new HashMap<>();
 }

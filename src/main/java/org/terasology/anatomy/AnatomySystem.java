@@ -60,10 +60,6 @@ public class AnatomySystem extends BaseComponentSystem {
     @ReceiveEvent
     public void onDamage(OnDamagedEvent event, EntityRef entity, AnatomyComponent comp) {
         if (comp != null) {
-            logger.info(comp.parts.toString());
-            logger.info(comp.parts.keySet().toString());
-            logger.info(entity.toFullDescription());
-            logger.info(String.valueOf(entity.hasComponent(AnatomyComponent.class)));
             List<String> keys = new ArrayList<>(comp.parts.keySet());
             // Randomly assign damage to a part, until positional damage is introduced.
             AnatomyPartTag partTag = comp.parts.get(keys.get(random.nextInt(0, keys.size() - 1)));

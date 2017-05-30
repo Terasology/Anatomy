@@ -21,6 +21,11 @@ import org.terasology.reflection.MappedContainer;
 @MappedContainer
 public class AnatomyPartTag {
     /**
+     * Id of the anatomy part. Useful for multi-word names.
+     */
+    public String id = "";
+
+    /**
      * Name of the anatomy part.
      */
     @Replicate

@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.anatomy.component;
+package org.terasology.anatomy.AnatomySkeleton.component;
 
-import com.google.common.collect.Lists;
+import org.terasology.entitySystem.Component;
 import org.terasology.network.Replicate;
-import org.terasology.reflection.MappedContainer;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@MappedContainer
-public class PartSkeletalDetails {
+public class BrokenBoneComponent implements Component {
     @Replicate
-    public float regenRate;
-
-    @Replicate
-    public int health = 100;
-
-    @Replicate
-    public int maxHealth = 100;
-
-    public long nextRegenTick;
-
-    @Replicate
-    public float waitBeforeRegen;
+    public Map<Integer, List<String>> parts = new HashMap<>();
 }

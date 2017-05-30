@@ -1,36 +1,72 @@
 {
     "Anatomy": {
-        "aPrefabNames": [
-            {
-                "name": "Head",
-                "displayName": "Head",
-                "prefabName": "anatomy:humanHead"
+        "parts": {
+            "head": {
+                "id": "head",
+                "name": "head"
             },
-            {
-                "name": "LeftArm",
-                "displayName": "Left arm",
-                "prefabName": "anatomy:humanArm"
+            "torso": {
+                "id": "torso",
+                "name": "torso"
             },
-            {
-                "name": "RightArm",
-                "displayName": "Right arm",
-                "prefabName": "anatomy:humanArm"
+            "leftArm": {
+                "id": "leftArm",
+                "name": "left arm"
             },
-            {
-                "name": "Body",
-                "displayName": "Body",
-                "prefabName": "anatomy:humanBody"
+            "rightArm": {
+                "id": "rightArm",
+                "name": "right arm"
             },
-            {
-                "name": "LeftLeg",
-                "displayName": "Left leg",
-                "prefabName": "anatomy:humanLeg"
+            "leftLeg": {
+                "id": "leftLeg",
+                "name": "left leg"
             },
-            {
-                "name": "RightLeg",
-                "displayName": "Right leg",
-                "prefabName": "anatomy:humanLeg"
+            "rightLeg": {
+                "id": "rightLeg",
+                "name": "right leg"
             }
-        ]
+        }
+    },
+    "Bone": {
+        "parts": {
+            "leftLeg": {
+                "health": 40,
+                "maxHealth": 40,
+                "regenRate": 0.5,
+                "waitBeforeRegen": 10
+            },
+            "rightLeg": {
+                "health": 40,
+                "maxHealth": 40,
+                "regenRate": 0.5,
+                "waitBeforeRegen": 10
+            }
+        },
+        "partEffectOutcomes": {
+            "leftLeg": [
+                {
+                    "severity": 1,
+                    "outcome": "modifySpeed",
+                    "magnitude": "0.9"
+                },
+                {
+                    "severity": 2,
+                    "outcome": "modifySpeed",
+                    "magnitude": "0.75"
+                }
+            ],
+            "rightLeg": [
+                {
+                    "severity": 1,
+                    "outcome": "modifySpeed",
+                    "magnitude": "0.9"
+                },
+                {
+                    "severity": 2,
+                    "outcome": "modifySpeed",
+                    "magnitude": "0.75"
+                }
+            ]
+        }
     }
 }

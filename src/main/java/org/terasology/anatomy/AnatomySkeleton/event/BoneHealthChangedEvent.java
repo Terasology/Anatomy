@@ -13,27 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.anatomy.component;
+package org.terasology.anatomy.AnatomySkeleton.event;
 
-import com.google.common.collect.Lists;
-import org.terasology.network.Replicate;
-import org.terasology.reflection.MappedContainer;
+import org.terasology.entitySystem.event.Event;
 
-import java.util.List;
+public class BoneHealthChangedEvent implements Event {
+    public String partId;
 
-@MappedContainer
-public class PartSkeletalDetails {
-    @Replicate
-    public float regenRate;
-
-    @Replicate
-    public int health = 100;
-
-    @Replicate
-    public int maxHealth = 100;
-
-    public long nextRegenTick;
-
-    @Replicate
-    public float waitBeforeRegen;
+    public BoneHealthChangedEvent(String partId) {
+        this.partId = partId;
+    }
 }
