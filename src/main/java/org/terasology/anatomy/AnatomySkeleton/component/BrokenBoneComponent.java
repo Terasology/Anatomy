@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 public class BrokenBoneComponent implements Component {
+    /**
+     * Maps severity to the list of parts affected.
+     */
     @Replicate
     public Map<String, List<String>> parts = new HashMap<>();
 }

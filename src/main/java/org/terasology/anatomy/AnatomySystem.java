@@ -17,9 +17,8 @@ package org.terasology.anatomy;
 
 import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.AnatomyPartTag;
-import org.terasology.anatomy.event.AnatomyEffectAddedEvent;
-import org.terasology.anatomy.event.AnatomyEffectRemovedEvent;
 import org.terasology.anatomy.event.AnatomyPartImpactedEvent;
+import org.terasology.anatomy.event.AnatomyStatusGatheringEvent;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
@@ -59,22 +58,6 @@ public class AnatomySystem extends BaseComponentSystem {
         }
     }
 
-    @ReceiveEvent
-    public void onAnatomyEffectAdded(AnatomyEffectAddedEvent event, EntityRef entityRef, AnatomyComponent component) {
-        List<String> partEffects = component.parts.get(event.partId).effects;
-        if (!partEffects.contains(event.effectName)) {
-            partEffects.add(event.effectName);
-        }
-        entityRef.saveComponent(component);
-    }
-
-    @ReceiveEvent
-    public void onAnatomyEffectRemoved(AnatomyEffectRemovedEvent event, EntityRef entityRef, AnatomyComponent component) {
-        List<String> partEffects = component.parts.get(event.partId).effects;
-        partEffects.remove(event.effectName);
-        entityRef.saveComponent(component);
-    }
-
     @Command(shortDescription = "Damage Anatomy part for amount")
     public void dmgAnatomyPart(@CommandParam("name") String partName, @CommandParam("amount") int amount) {
         for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyComponent.class)) {
@@ -102,13 +85,20 @@ public class AnatomySystem extends BaseComponentSystem {
     public String showAnatomyEffects(@Sender EntityRef client) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         String result = "Anatomy effects:\n";
-        for (Map.Entry<String, AnatomyPartTag> partEntry : character.getComponent(AnatomyComponent.class).parts.entrySet()) {
-            result += partEntry.getValue().name + ": ";
-            for (String partEffect : partEntry.getValue().effects) {
+        AnatomyStatusGatheringEvent event = new AnatomyStatusGatheringEvent();
+        character.send(event);
+        Map<String, List<String>> partEffects = event.getEffectsMap();
+        for (Map.Entry<String, List<String>> partEntry : partEffects.entrySet()) {
+            result += getAnatomyNameFromID(partEntry.getKey(), character.getComponent(AnatomyComponent.class)) + ": ";
+            for (String partEffect : partEntry.getValue()) {
                 result += partEffect + ", ";
             }
             result += "\n";
         }
         return result;
+    }
+
+    public String getAnatomyNameFromID(String partID, AnatomyComponent component) {
+        return component.parts.get(partID).name;
     }
 }

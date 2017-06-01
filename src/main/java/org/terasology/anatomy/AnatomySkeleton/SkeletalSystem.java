@@ -21,8 +21,7 @@ import org.terasology.anatomy.AnatomySkeleton.component.BrokenBoneComponent;
 import org.terasology.anatomy.AnatomySkeleton.event.BoneHealthChangedEvent;
 import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.PartSkeletalDetails;
-import org.terasology.anatomy.event.AnatomyEffectAddedEvent;
-import org.terasology.anatomy.event.AnatomyEffectRemovedEvent;
+import org.terasology.anatomy.event.AnatomyStatusGatheringEvent;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
@@ -63,6 +62,17 @@ public class SkeletalSystem extends BaseComponentSystem {
         }
     }
 
+    @ReceiveEvent
+    public void onGather(AnatomyStatusGatheringEvent event, EntityRef entityRef, BrokenBoneComponent brokenBoneComponent) {
+        if (event.getSystemFilter().equals("") || event.getSystemFilter().equals("Skeletal")) {
+            for (Map.Entry<String, List<String>> brokenBoneEffect : brokenBoneComponent.parts.entrySet()) {
+                for (String part : brokenBoneEffect.getValue()) {
+                    event.addEffect(part, severityNameMap.get(Integer.parseInt(brokenBoneEffect.getKey())));
+                }
+            }
+        }
+    }
+
     private void applyEffect(EntityRef entityRef, String partId, int severity) {
         if (entityRef.getComponent(BrokenBoneComponent.class) == null) {
             entityRef.addComponent(new BrokenBoneComponent());
@@ -74,7 +84,6 @@ public class SkeletalSystem extends BaseComponentSystem {
                     return;
                 } else {
                     partsOfSeverity.getValue().remove(partId);
-                    entityRef.send(new AnatomyEffectRemovedEvent(partId, severityNameMap.get(Integer.parseInt(partsOfSeverity.getKey()))));
                 }
             }
         }
@@ -84,16 +93,13 @@ public class SkeletalSystem extends BaseComponentSystem {
             brokenBoneComponent.parts.put(String.valueOf(severity), Lists.newArrayList(partId));
         }
         entityRef.saveComponent(brokenBoneComponent);
-        entityRef.send(new AnatomyEffectAddedEvent(partId, severityNameMap.get(severity)));
     }
 
     private void removeEffect(EntityRef entityRef, String partId) {
         BrokenBoneComponent brokenBoneComponent = entityRef.getComponent(BrokenBoneComponent.class);
         if (brokenBoneComponent != null) {
             for (Map.Entry<String, List<String>> partsOfSeverity : brokenBoneComponent.parts.entrySet()) {
-                if (partsOfSeverity.getValue().remove(partId)) {
-                    entityRef.send(new AnatomyEffectRemovedEvent(partId, severityNameMap.get(Integer.parseInt(partsOfSeverity.getKey()))));
-                };
+                partsOfSeverity.getValue().remove(partId);
             }
             entityRef.saveComponent(brokenBoneComponent);
         }

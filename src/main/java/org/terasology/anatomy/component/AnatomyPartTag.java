@@ -33,7 +33,4 @@ public class AnatomyPartTag {
      */
     @Replicate
     public String name = "";
-
-    @Replicate
-    public List<String> effects = Lists.newArrayList();
 }
