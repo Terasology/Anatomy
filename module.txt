@@ -1,6 +1,6 @@
 {
     "id" : "Anatomy",
-    "version" : "0.1.1-SNAPSHOT",
+    "version" : "0.2.1-SNAPSHOT",
     "author" : "XTariq",
     "displayName" : "Anatomy",
     "description" : "A basic anatomy system for players, NPCs, and creatures alike.",
