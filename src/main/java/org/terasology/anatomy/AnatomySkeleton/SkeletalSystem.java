@@ -16,11 +16,10 @@
 package org.terasology.anatomy.AnatomySkeleton;
 
 import com.google.common.collect.Lists;
-import org.terasology.anatomy.AnatomySkeleton.component.BoneComponent;
-import org.terasology.anatomy.AnatomySkeleton.component.BrokenBoneComponent;
+import org.terasology.anatomy.AnatomySkeleton.component.InjuredBoneComponent;
 import org.terasology.anatomy.AnatomySkeleton.event.BoneHealthChangedEvent;
 import org.terasology.anatomy.component.AnatomyComponent;
-import org.terasology.anatomy.component.PartSkeletalDetails;
+import org.terasology.anatomy.component.PartHealthDetails;
 import org.terasology.anatomy.event.AnatomyStatusGatheringEvent;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
@@ -53,8 +52,8 @@ public class SkeletalSystem extends BaseComponentSystem {
     }
 
     @ReceiveEvent
-    public void onBoneHealthChanged(BoneHealthChangedEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent, BoneComponent boneComponent) {
-        int severity = getEffectSeverity(event.partId, boneComponent);
+    public void onBoneHealthChanged(BoneHealthChangedEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent, InjuredBoneComponent injuredBoneComponent) {
+        int severity = getEffectSeverity(event.partId, injuredBoneComponent);
         if (severity == 0) {
             removeEffect(entityRef, event.partId);
         } else {
@@ -63,22 +62,22 @@ public class SkeletalSystem extends BaseComponentSystem {
     }
 
     @ReceiveEvent
-    public void onGather(AnatomyStatusGatheringEvent event, EntityRef entityRef, BrokenBoneComponent brokenBoneComponent) {
+    public void onGather(AnatomyStatusGatheringEvent event, EntityRef entityRef, InjuredBoneComponent injuredBoneComponent) {
         if (event.getSystemFilter().equals("") || event.getSystemFilter().equals("Skeletal")) {
-            for (Map.Entry<String, List<String>> brokenBoneEffect : brokenBoneComponent.parts.entrySet()) {
-                for (String part : brokenBoneEffect.getValue()) {
-                    event.addEffect(part, severityNameMap.get(Integer.parseInt(brokenBoneEffect.getKey())));
+            for (Map.Entry<String, List<String>> injuredBoneEffect : injuredBoneComponent.parts.entrySet()) {
+                for (String part : injuredBoneEffect.getValue()) {
+                    event.addEffect(part, severityNameMap.get(Integer.parseInt(injuredBoneEffect.getKey())));
                 }
             }
         }
     }
 
     private void applyEffect(EntityRef entityRef, String partId, int severity) {
-        if (entityRef.getComponent(BrokenBoneComponent.class) == null) {
-            entityRef.addComponent(new BrokenBoneComponent());
+        if (entityRef.getComponent(InjuredBoneComponent.class) == null) {
+            entityRef.addComponent(new InjuredBoneComponent());
         }
-        BrokenBoneComponent brokenBoneComponent = entityRef.getComponent(BrokenBoneComponent.class);
-        for (Map.Entry<String, List<String>> partsOfSeverity : brokenBoneComponent.parts.entrySet()) {
+        InjuredBoneComponent injuredBoneComponent = entityRef.getComponent(InjuredBoneComponent.class);
+        for (Map.Entry<String, List<String>> partsOfSeverity : injuredBoneComponent.parts.entrySet()) {
             if (partsOfSeverity.getValue().contains(partId)) {
                 if (Integer.parseInt(partsOfSeverity.getKey()) == severity) {
                     return;
@@ -87,28 +86,28 @@ public class SkeletalSystem extends BaseComponentSystem {
                 }
             }
         }
-        if (brokenBoneComponent.parts.containsKey(String.valueOf(severity))) {
-            brokenBoneComponent.parts.get(String.valueOf(severity)).add(partId);
+        if (injuredBoneComponent.parts.containsKey(String.valueOf(severity))) {
+            injuredBoneComponent.parts.get(String.valueOf(severity)).add(partId);
         } else {
-            brokenBoneComponent.parts.put(String.valueOf(severity), Lists.newArrayList(partId));
+            injuredBoneComponent.parts.put(String.valueOf(severity), Lists.newArrayList(partId));
         }
-        entityRef.saveComponent(brokenBoneComponent);
+        entityRef.saveComponent(injuredBoneComponent);
     }
 
     private void removeEffect(EntityRef entityRef, String partId) {
-        BrokenBoneComponent brokenBoneComponent = entityRef.getComponent(BrokenBoneComponent.class);
-        if (brokenBoneComponent != null) {
-            for (Map.Entry<String, List<String>> partsOfSeverity : brokenBoneComponent.parts.entrySet()) {
+        InjuredBoneComponent injuredBoneComponent = entityRef.getComponent(InjuredBoneComponent.class);
+        if (injuredBoneComponent != null) {
+            for (Map.Entry<String, List<String>> partsOfSeverity : injuredBoneComponent.parts.entrySet()) {
                 partsOfSeverity.getValue().remove(partId);
             }
-            entityRef.saveComponent(brokenBoneComponent);
+            entityRef.saveComponent(injuredBoneComponent);
         }
     }
 
-    private int getEffectSeverity(String partId, BoneComponent boneComponent) {
-        int maxHealth = boneComponent.parts.get(partId).maxHealth;
-        int health = boneComponent.parts.get(partId).health;
-        float healthPercent = (float)health / maxHealth;
+    private int getEffectSeverity(String partId, InjuredBoneComponent injuredBoneComponent) {
+        int maxHealth = injuredBoneComponent.partHealths.get(partId).maxHealth;
+        int health = injuredBoneComponent.partHealths.get(partId).health;
+        float healthPercent = (float) health / maxHealth;
         int severity = 0;
         if (healthPercent > BROKEN_BONE_THRESHOLD && healthPercent <= DAMAGED_BONE_THRESHOLD) {
             severity = 1;
@@ -120,14 +119,14 @@ public class SkeletalSystem extends BaseComponentSystem {
         return severity;
     }
 
-    @Command(shortDescription = "Show bone healths of all parts")
+    @Command(shortDescription = "Show bone healths of all injured parts")
     public String showBoneHealths(@Sender EntityRef client) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
-        BoneComponent boneComponent = character.getComponent(BoneComponent.class);
+        InjuredBoneComponent injuredBoneComponent = character.getComponent(InjuredBoneComponent.class);
         String result = "Bone healths :\n";
-        if (boneComponent != null) {
-            for (Map.Entry<String, PartSkeletalDetails> partSkeletalDetails : boneComponent.parts.entrySet()) {
-                result += partSkeletalDetails.getKey() + " :" + partSkeletalDetails.getValue().health + "/" + partSkeletalDetails.getValue().maxHealth + "\n";
+        if (injuredBoneComponent != null) {
+            for (Map.Entry<String, PartHealthDetails> partHealthDetailsEntry : injuredBoneComponent.partHealths.entrySet()) {
+                result += partHealthDetailsEntry.getKey() + " :" + partHealthDetailsEntry.getValue().health + "/" + partHealthDetailsEntry.getValue().maxHealth + "\n";
             }
         }
         return result;
@@ -136,10 +135,11 @@ public class SkeletalSystem extends BaseComponentSystem {
     @Command(shortDescription = "Heal all bone parts to full health")
     public String healAllBones(@Sender EntityRef client) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
-        BoneComponent boneComponent = character.getComponent(BoneComponent.class);
-        if (boneComponent != null) {
-            for (Map.Entry<String, PartSkeletalDetails> partSkeletalDetails : boneComponent.parts.entrySet()) {
-                partSkeletalDetails.getValue().health = partSkeletalDetails.getValue().maxHealth;
+        InjuredBoneComponent injuredBoneComponent = character.getComponent(InjuredBoneComponent.class);
+        if (injuredBoneComponent != null) {
+            for (Map.Entry<String, PartHealthDetails> partHealthDetailsEntry : injuredBoneComponent.partHealths.entrySet()) {
+                partHealthDetailsEntry.getValue().health = partHealthDetailsEntry.getValue().maxHealth;
+                character.send(new BoneHealthChangedEvent(partHealthDetailsEntry.getKey()));
             }
         }
         return "Healths fully restored.";

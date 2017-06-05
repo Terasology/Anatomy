@@ -16,24 +16,16 @@
 package org.terasology.anatomy.AnatomySkeleton.component;
 
 import org.terasology.anatomy.component.PartEffectOutcome;
-import org.terasology.anatomy.component.PartSkeletalDetails;
 import org.terasology.entitySystem.Component;
 import org.terasology.network.Replicate;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * A component that allows an entity to have bones in their anatomy.
  */
 public class BoneComponent implements Component {
-    /**
-     * Maps Anatomy parts to its details.
-     */
-    @Replicate
-    public Map<String, PartSkeletalDetails> parts = new HashMap<>();
-
     @Replicate
     public Map<String, PartEffectOutcome> partEffectOutcomes = new HashMap<>();
 }

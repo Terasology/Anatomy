@@ -15,6 +15,8 @@
  */
 package org.terasology.anatomy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.AnatomyPartTag;
 import org.terasology.anatomy.event.AnatomyPartImpactedEvent;
@@ -48,6 +50,8 @@ public class AnatomySystem extends BaseComponentSystem {
 
     private Random random = new FastRandom();
 
+    private static final Logger logger = LoggerFactory.getLogger(AnatomySystem.class);
+
     @ReceiveEvent
     public void onDamage(OnDamagedEvent event, EntityRef entity, AnatomyComponent comp) {
         if (comp != null) {
@@ -59,26 +63,30 @@ public class AnatomySystem extends BaseComponentSystem {
     }
 
     @Command(shortDescription = "Damage Anatomy part for amount")
-    public void dmgAnatomyPart(@CommandParam("name") String partName, @CommandParam("amount") int amount) {
-        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyComponent.class)) {
-            AnatomyComponent anatomyComponent = clientEntity.getComponent(AnatomyComponent.class);
-            AnatomyPartTag partTag = anatomyComponent.parts.get(partName);
-            if (partTag != null) {
-                clientEntity.send(new AnatomyPartImpactedEvent(amount, partTag));
-            }
+    public String dmgAnatomyPart(@Sender EntityRef entityRef, @CommandParam("name") String partName, @CommandParam("amount") int amount) {
+        EntityRef clientEntity = entityRef.getComponent(ClientComponent.class).character;
+        AnatomyComponent anatomyComponent = clientEntity.getComponent(AnatomyComponent.class);
+        AnatomyPartTag partTag = anatomyComponent.parts.get(partName);
+        if (partTag != null) {
+            clientEntity.send(new AnatomyPartImpactedEvent(amount, partTag));
+            return "Inflicted " + String.valueOf(amount) + " damage to " + getAnatomyNameFromID(partTag.id, anatomyComponent);
+        } else {
+            return "No such part found.";
         }
     }
 
     @Command(shortDescription = "Damage ALL Anatomy parts for amount")
-    public void dmgAnatomyPartAll(@CommandParam("amount") int amount) {
-        for (EntityRef clientEntity : entityManager.getEntitiesWith(AnatomyComponent.class)) {
-            AnatomyComponent anatomyComponent = clientEntity.getComponent(AnatomyComponent.class);
-            List<String> keys = new ArrayList<>(anatomyComponent.parts.keySet());
-            for (String key : keys) {
-                AnatomyPartTag partTag = anatomyComponent.parts.get(key);
-                clientEntity.send(new AnatomyPartImpactedEvent(amount, partTag));
-            }
+    public String dmgAnatomyPartAll(@Sender EntityRef entityRef, @CommandParam("amount") int amount) {
+        EntityRef clientEntity = entityRef.getComponent(ClientComponent.class).character;
+        AnatomyComponent anatomyComponent = clientEntity.getComponent(AnatomyComponent.class);
+        List<String> keys = new ArrayList<>(anatomyComponent.parts.keySet());
+        String result = "";
+        for (String key : keys) {
+            result += "Inflicted " + String.valueOf(amount) + " damage to " + getAnatomyNameFromID(key, anatomyComponent) + "\n";
+            AnatomyPartTag partTag = anatomyComponent.parts.get(key);
+            clientEntity.send(new AnatomyPartImpactedEvent(amount, partTag));
         }
+        return result;
     }
 
     @Command(shortDescription = "Lists anatomy effects on all parts")

@@ -28,20 +28,6 @@
         }
     },
     "Bone": {
-        "parts": {
-            "leftLeg": {
-                "health": 40,
-                "maxHealth": 40,
-                "regenRate": 0.5,
-                "waitBeforeRegen": 10
-            },
-            "rightLeg": {
-                "health": 40,
-                "maxHealth": 40,
-                "regenRate": 0.5,
-                "waitBeforeRegen": 10
-            }
-        },
         "partEffectOutcomes": {
             "leftLeg:1": {
                 "outcome": "modifySpeed",

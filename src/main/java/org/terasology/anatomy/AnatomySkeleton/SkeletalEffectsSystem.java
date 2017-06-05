@@ -16,7 +16,7 @@
 package org.terasology.anatomy.AnatomySkeleton;
 
 import org.terasology.anatomy.AnatomySkeleton.component.BoneComponent;
-import org.terasology.anatomy.AnatomySkeleton.component.BrokenBoneComponent;
+import org.terasology.anatomy.AnatomySkeleton.component.InjuredBoneComponent;
 import org.terasology.anatomy.component.PartEffectOutcome;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
@@ -33,15 +33,18 @@ import java.util.Map;
 @RegisterSystem
 public class SkeletalEffectsSystem extends BaseComponentSystem {
     @ReceiveEvent
-    public void modifySpeed(GetMaxSpeedEvent event, EntityRef entityRef, BoneComponent boneComponent, BrokenBoneComponent brokenBoneComponent) {
-        // Loop over each severity of the BrokenBone effect.
-        for (Map.Entry<String, List<String>> brokenBoneEntry : brokenBoneComponent.parts.entrySet()) {
+    public void modifySpeed(GetMaxSpeedEvent event, EntityRef entityRef, BoneComponent boneComponent, InjuredBoneComponent injuredBoneComponent) {
+        // Loop over each severity of the InjuredBone effect.
+        for (Map.Entry<String, List<String>> injuredBoneEntry : injuredBoneComponent.parts.entrySet()) {
             // Loop over each part corresponding to a particular severity.
-            for (String brokenBonePart : brokenBoneEntry.getValue()) {
+            for (String injuredBonePart : injuredBoneEntry.getValue()) {
                 //Get the outcome corresponding to the part and its effect severity.
-                PartEffectOutcome partEffectOutcome = boneComponent.partEffectOutcomes.get(brokenBonePart + ":" + brokenBoneEntry.getKey());
-                if (partEffectOutcome.outcome.equals("modifySpeed")) {
-                    event.multiply(partEffectOutcome.magnitude);
+                //TODO: Temporary for now (since only leg effects are defined), until effects is sorted out.
+                if (injuredBonePart.contains("Leg")) {
+                    PartEffectOutcome partEffectOutcome = boneComponent.partEffectOutcomes.get(injuredBonePart + ":" + injuredBoneEntry.getKey());
+                    if (partEffectOutcome.outcome.equals("modifySpeed")) {
+                        event.multiply(partEffectOutcome.magnitude);
+                    }
                 }
             }
         }

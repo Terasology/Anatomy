@@ -13,19 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.anatomy.AnatomySkeleton.component;
+package org.terasology.anatomy.component;
 
-import org.terasology.entitySystem.Component;
 import org.terasology.network.Replicate;
+import org.terasology.reflection.MappedContainer;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-public class BrokenBoneComponent implements Component {
-    /**
-     * Maps severity to the list of parts affected.
-     */
+@MappedContainer
+public class PartHealthDetails {
     @Replicate
-    public Map<String, List<String>> parts = new HashMap<>();
+    public float regenRate = 1.0f;
+
+    @Replicate
+    public int health = 100;
+
+    @Replicate
+    public int maxHealth = 100;
+
+    public long nextRegenTick;
+
+    @Replicate
+    public float waitBeforeRegen = 10.0f;
+
+    public PartHealthDetails() {
+    }
+
+    public PartHealthDetails(int maxHealth) {
+        this.health = maxHealth;
+        this.maxHealth = maxHealth;
+    }
 }
