@@ -15,7 +15,6 @@
  */
 package org.terasology.anatomy.AnatomySkeleton;
 
-import org.terasology.anatomy.AnatomySkeleton.component.BoneComponent;
 import org.terasology.anatomy.AnatomySkeleton.component.InjuredBoneComponent;
 import org.terasology.anatomy.AnatomySkeleton.event.BoneHealthChangedEvent;
 import org.terasology.anatomy.component.AnatomyComponent;
@@ -49,6 +48,7 @@ public class SkeletalAuthoritySystem extends BaseComponentSystem {
     private float bluntDamageMultiplier = 1.5f;
 
     private String SKELETAL_REGEN_PREFIX = "Skeletal:Regen:";
+    private String SKELETAL_SYSTEM_ID = "SkeletalSystem";
 
     @ReceiveEvent
     public void onRegen(DelayedActionTriggeredEvent event, EntityRef entityRef) {
@@ -66,30 +66,32 @@ public class SkeletalAuthoritySystem extends BaseComponentSystem {
     }
 
     @ReceiveEvent
-    public void onBoneDamage(AnatomyPartImpactedEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent, BoneComponent boneComponent) {
-        InjuredBoneComponent injuredBoneComponent = entityRef.getComponent(InjuredBoneComponent.class);
-        if (injuredBoneComponent == null) {
-            injuredBoneComponent = new InjuredBoneComponent();
-            entityRef.addComponent(injuredBoneComponent);
+    public void onBoneDamage(AnatomyPartImpactedEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent) {
+        if (anatomyComponent.parts.get(event.getTargetPart().id).systems.contains(SKELETAL_SYSTEM_ID)) {
+            InjuredBoneComponent injuredBoneComponent = entityRef.getComponent(InjuredBoneComponent.class);
+            if (injuredBoneComponent == null) {
+                injuredBoneComponent = new InjuredBoneComponent();
+                entityRef.addComponent(injuredBoneComponent);
+            }
+            PartHealthDetails partHealthDetails = injuredBoneComponent.partHealths.get(event.getTargetPart().id);
+            if (partHealthDetails == null) {
+                partHealthDetails = new PartHealthDetails();
+                injuredBoneComponent.partHealths.put(event.getTargetPart().id, partHealthDetails);
+                // Part has been injured for the first time, so add delayed regen event.
+                delayManager.addDelayedAction(entityRef, SKELETAL_REGEN_PREFIX + event.getTargetPart().id, (long) (1000 / partHealthDetails.regenRate));
+            }
+            int damageAmount = event.getAmount();
+            if (event.getDamageType().getName().equals("Equipment:bluntDamage")) {
+                damageAmount *= bluntDamageMultiplier;
+            }
+            partHealthDetails.health -= damageAmount;
+            if (partHealthDetails.health < 0) {
+                partHealthDetails.health = 0;
+            }
+            partHealthDetails.nextRegenTick = time.getGameTimeInMs() + TeraMath.floorToInt(partHealthDetails.waitBeforeRegen * 1000);
+            entityRef.saveComponent(injuredBoneComponent);
+            entityRef.send(new BoneHealthChangedEvent(event.getTargetPart().id));
         }
-        PartHealthDetails partHealthDetails = injuredBoneComponent.partHealths.get(event.getTargetPart().id);
-        if (partHealthDetails == null) {
-            partHealthDetails = new PartHealthDetails();
-            injuredBoneComponent.partHealths.put(event.getTargetPart().id, partHealthDetails);
-            // Part has been injured for the first time, so add delayed regen event.
-            delayManager.addDelayedAction(entityRef, SKELETAL_REGEN_PREFIX + event.getTargetPart().id, (long) (1000 / partHealthDetails.regenRate));
-        }
-        int damageAmount = event.getAmount();
-        if (event.getDamageType().getName().equals("Equipment:bluntDamage")) {
-            damageAmount *= bluntDamageMultiplier;
-        }
-        partHealthDetails.health -= damageAmount;
-        if (partHealthDetails.health < 0) {
-            partHealthDetails.health = 0;
-        }
-        partHealthDetails.nextRegenTick = time.getGameTimeInMs() + TeraMath.floorToInt(partHealthDetails.waitBeforeRegen * 1000);
-        entityRef.saveComponent(injuredBoneComponent);
-        entityRef.send(new BoneHealthChangedEvent(event.getTargetPart().id));
     }
 
     private int regenerateHealth(PartHealthDetails partDetails, int healAmount) {
