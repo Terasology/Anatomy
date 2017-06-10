@@ -15,11 +15,8 @@
  */
 package org.terasology.anatomy.AnatomySkeleton;
 
-import com.google.common.collect.Lists;
 import org.terasology.anatomy.AnatomySkeleton.component.InjuredBoneComponent;
 import org.terasology.anatomy.component.AnatomyComponent;
-import org.terasology.anatomy.component.AnatomyPartTag;
-import org.terasology.anatomy.component.PartEffectOutcome;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
