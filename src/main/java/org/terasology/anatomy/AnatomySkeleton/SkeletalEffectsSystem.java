@@ -24,6 +24,7 @@ import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.logic.characters.AffectJumpForceEvent;
 import org.terasology.logic.characters.GetMaxSpeedEvent;
 
 import java.util.HashMap;
@@ -53,6 +54,20 @@ public class SkeletalEffectsSystem extends BaseComponentSystem {
             // Loop over each part corresponding to a particular severity.
             for (String injuredBonePart : injuredBoneEntry.getValue()) {
                 //Get the outcome corresponding to the part and its effect severity.
+                //TODO: Temporary for now (since only leg effects are defined), until effects is sorted out.
+                if (injuredBonePart.contains("Leg")) {
+                    if (anatomyComponent.parts.get(injuredBonePart).abilities.contains(MOBILITY_EFFECT)) {
+                        event.multiply(severityPercentageEffectMap.get(injuredBoneEntry.getKey()));
+                    }
+                }
+            }
+        }
+    }
+
+    @ReceiveEvent
+    public void modifyJumpSpeed(AffectJumpForceEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent, InjuredBoneComponent injuredBoneComponent) {
+        for (Map.Entry<String, List<String>> injuredBoneEntry : injuredBoneComponent.parts.entrySet()) {
+            for (String injuredBonePart : injuredBoneEntry.getValue()) {
                 //TODO: Temporary for now (since only leg effects are defined), until effects is sorted out.
                 if (injuredBonePart.contains("Leg")) {
                     if (anatomyComponent.parts.get(injuredBonePart).abilities.contains(MOBILITY_EFFECT)) {
