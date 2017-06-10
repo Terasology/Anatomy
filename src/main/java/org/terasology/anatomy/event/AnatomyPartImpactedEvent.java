@@ -20,16 +20,21 @@ import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.Event;
 import org.terasology.entitySystem.prefab.Prefab;
 import org.terasology.logic.health.EngineDamageTypes;
+import org.terasology.network.ServerEvent;
 
 /**
  * This event is sent when an anatomy part is damaged.
  */
+@ServerEvent
 public class AnatomyPartImpactedEvent implements Event {
     private int amount;
     private Prefab damageType;
     private EntityRef instigator;
     private EntityRef directCause;
     private AnatomyPartTag targetPart;
+
+    public AnatomyPartImpactedEvent() {
+    }
 
     public AnatomyPartImpactedEvent(int amount, AnatomyPartTag targetPart) {
         this(amount, targetPart, EngineDamageTypes.DIRECT.get());
@@ -44,11 +49,11 @@ public class AnatomyPartImpactedEvent implements Event {
     }
 
     /**
-     * @param amount        The amount of damage being caused.
-     * @param targetPart    The target anatomy part.
-     * @param damageType    The type of damage being dealt.
-     * @param instigator    The entity which caused the damage.
-     * @param directCause   The tool used for causing the damage.
+     * @param amount      The amount of damage being caused.
+     * @param targetPart  The target anatomy part.
+     * @param damageType  The type of damage being dealt.
+     * @param instigator  The entity which caused the damage.
+     * @param directCause The tool used for causing the damage.
      */
     public AnatomyPartImpactedEvent(int amount, AnatomyPartTag targetPart, Prefab damageType, EntityRef instigator, EntityRef directCause) {
         this.amount = amount;

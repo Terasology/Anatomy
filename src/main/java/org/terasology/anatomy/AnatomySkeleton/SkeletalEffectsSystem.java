@@ -15,15 +15,16 @@
  */
 package org.terasology.anatomy.AnatomySkeleton;
 
-import org.terasology.anatomy.AnatomySkeleton.component.BoneComponent;
-import org.terasology.anatomy.AnatomySkeleton.component.BrokenBoneComponent;
-import org.terasology.anatomy.component.PartEffectOutcome;
+import org.terasology.anatomy.AnatomySkeleton.component.InjuredBoneComponent;
+import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.logic.characters.AffectJumpForceEvent;
 import org.terasology.logic.characters.GetMaxSpeedEvent;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,16 +33,43 @@ import java.util.Map;
  */
 @RegisterSystem
 public class SkeletalEffectsSystem extends BaseComponentSystem {
+    private Map<String, Float> severityPercentageEffectMap = new HashMap<>();
+
+    private String MOBILITY_EFFECT = "mobility";
+
+    @Override
+    public void initialise() {
+        severityPercentageEffectMap.put("1", 0.9f);
+        severityPercentageEffectMap.put("2", 0.7f);
+        severityPercentageEffectMap.put("3", 0.5f);
+    }
+
     @ReceiveEvent
-    public void modifySpeed(GetMaxSpeedEvent event, EntityRef entityRef, BoneComponent boneComponent, BrokenBoneComponent brokenBoneComponent) {
-        // Loop over each severity of the BrokenBone effect.
-        for (Map.Entry<String, List<String>> brokenBoneEntry : brokenBoneComponent.parts.entrySet()) {
+    public void modifySpeed(GetMaxSpeedEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent, InjuredBoneComponent injuredBoneComponent) {
+        // Loop over each severity of the InjuredBone effect.
+        for (Map.Entry<String, List<String>> injuredBoneEntry : injuredBoneComponent.parts.entrySet()) {
             // Loop over each part corresponding to a particular severity.
-            for (String brokenBonePart : brokenBoneEntry.getValue()) {
+            for (String injuredBonePart : injuredBoneEntry.getValue()) {
                 //Get the outcome corresponding to the part and its effect severity.
-                PartEffectOutcome partEffectOutcome = boneComponent.partEffectOutcomes.get(brokenBonePart + ":" + brokenBoneEntry.getKey());
-                if (partEffectOutcome.outcome.equals("modifySpeed")) {
-                    event.multiply(partEffectOutcome.magnitude);
+                //TODO: Temporary for now (since only leg effects are defined), until effects is sorted out.
+                if (injuredBonePart.contains("Leg")) {
+                    if (anatomyComponent.parts.get(injuredBonePart).abilities.contains(MOBILITY_EFFECT)) {
+                        event.multiply(severityPercentageEffectMap.get(injuredBoneEntry.getKey()));
+                    }
+                }
+            }
+        }
+    }
+
+    @ReceiveEvent
+    public void modifyJumpSpeed(AffectJumpForceEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent, InjuredBoneComponent injuredBoneComponent) {
+        for (Map.Entry<String, List<String>> injuredBoneEntry : injuredBoneComponent.parts.entrySet()) {
+            for (String injuredBonePart : injuredBoneEntry.getValue()) {
+                //TODO: Temporary for now (since only leg effects are defined), until effects is sorted out.
+                if (injuredBonePart.contains("Leg")) {
+                    if (anatomyComponent.parts.get(injuredBonePart).abilities.contains(MOBILITY_EFFECT)) {
+                        event.multiply(severityPercentageEffectMap.get(injuredBoneEntry.getKey()));
+                    }
                 }
             }
         }

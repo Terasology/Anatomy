@@ -13,27 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.anatomy.AnatomySkeleton.component;
+package org.terasology.anatomy.component;
 
-import org.terasology.anatomy.component.PartEffectOutcome;
-import org.terasology.anatomy.component.PartSkeletalDetails;
-import org.terasology.entitySystem.Component;
 import org.terasology.network.Replicate;
+import org.terasology.reflection.MappedContainer;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-/**
- * A component that allows an entity to have bones in their anatomy.
- */
-public class BoneComponent implements Component {
-    /**
-     * Maps Anatomy parts to its details.
-     */
+@MappedContainer
+public class PartHealthDetails {
     @Replicate
-    public Map<String, PartSkeletalDetails> parts = new HashMap<>();
+    public float regenRate = 1.0f;
 
     @Replicate
-    public Map<String, PartEffectOutcome> partEffectOutcomes = new HashMap<>();
+    public int health = 100;
+
+    @Replicate
+    public int maxHealth = 100;
+
+    public long nextRegenTick;
+
+    @Replicate
+    public float waitBeforeRegen = 10.0f;
+
+    public PartHealthDetails() {
+    }
+
+    public PartHealthDetails(int maxHealth) {
+        this.health = maxHealth;
+        this.maxHealth = maxHealth;
+    }
 }

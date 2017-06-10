@@ -33,4 +33,10 @@ public class AnatomyPartTag {
      */
     @Replicate
     public String name = "";
+
+    @Replicate
+    public List<String> systems = Lists.newArrayList();
+
+    @Replicate
+    public List<String> abilities = Lists.newArrayList();
 }
