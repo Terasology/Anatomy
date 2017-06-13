@@ -3,55 +3,59 @@
         "parts": {
             "head": {
                 "id": "head",
-                "name": "head"
+                "name": "head",
+                "systems": [
+                    "SkeletalSystem"
+                ],
+                "abilities": [
+                ]
             },
             "torso": {
                 "id": "torso",
-                "name": "torso"
+                "name": "torso",
+                "systems": [
+                    "SkeletalSystem"
+                ],
+                "abilities": [
+                ]
             },
             "leftArm": {
                 "id": "leftArm",
-                "name": "left arm"
+                "name": "left arm",
+                "systems": [
+                    "SkeletalSystem"
+                ],
+                "abilities": [
+                ]
             },
             "rightArm": {
                 "id": "rightArm",
-                "name": "right arm"
+                "name": "right arm",
+                "systems": [
+                    "SkeletalSystem"
+                ],
+                "abilities": [
+                ]
             },
             "leftLeg": {
                 "id": "leftLeg",
-                "name": "left leg"
+                "name": "left leg",
+                "systems": [
+                    "SkeletalSystem"
+                ],
+                "abilities": [
+                    "mobility"
+                ]
             },
             "rightLeg": {
                 "id": "rightLeg",
-                "name": "right leg"
-            }
-        }
-    },
-    "Bone": {
-        "partEffectOutcomes": {
-            "leftLeg:1": {
-                "outcome": "modifySpeed",
-                "magnitude": 0.9
-            },
-            "leftLeg:2": {
-                "outcome": "modifySpeed",
-                "magnitude": 0.6
-            },
-            "leftLeg:3": {
-                "outcome": "modifySpeed",
-                "magnitude": 0.4
-            },
-            "rightLeg:1": {
-                "outcome": "modifySpeed",
-                "magnitude": 0.9
-            },
-            "rightLeg:2": {
-                "outcome": "modifySpeed",
-                "magnitude": 0.6
-            },
-            "rightLeg:3": {
-                "outcome": "modifySpeed",
-                "magnitude": 0.4
+                "name": "right leg",
+                "systems": [
+                    "SkeletalSystem"
+                ],
+                "abilities": [
+                    "mobility"
+                ]
             }
         }
     }
