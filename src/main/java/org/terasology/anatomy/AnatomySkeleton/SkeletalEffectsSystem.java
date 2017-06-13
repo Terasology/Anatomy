@@ -15,8 +15,10 @@
  */
 package org.terasology.anatomy.AnatomySkeleton;
 
+import com.google.common.collect.Lists;
 import org.terasology.anatomy.AnatomySkeleton.component.InjuredBoneComponent;
 import org.terasology.anatomy.component.AnatomyComponent;
+import org.terasology.anatomy.component.AnatomyPartTag;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
@@ -39,39 +41,45 @@ public class SkeletalEffectsSystem extends BaseComponentSystem {
 
     @Override
     public void initialise() {
-        severityPercentageEffectMap.put("1", 0.9f);
-        severityPercentageEffectMap.put("2", 0.7f);
-        severityPercentageEffectMap.put("3", 0.5f);
+        severityPercentageEffectMap.put("1", 0.8f);
+        severityPercentageEffectMap.put("2", 0.5f);
+        severityPercentageEffectMap.put("3", 0.2f);
     }
 
     @ReceiveEvent
     public void modifySpeed(GetMaxSpeedEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent, InjuredBoneComponent injuredBoneComponent) {
-        // Loop over each severity of the InjuredBone effect.
-        for (Map.Entry<String, List<String>> injuredBoneEntry : injuredBoneComponent.parts.entrySet()) {
-            // Loop over each part corresponding to a particular severity.
-            for (String injuredBonePart : injuredBoneEntry.getValue()) {
-                //Get the outcome corresponding to the part and its effect severity.
-                //TODO: Temporary for now (since only leg effects are defined), until effects is sorted out.
-                if (injuredBonePart.contains("Leg")) {
-                    if (anatomyComponent.parts.get(injuredBonePart).abilities.contains(MOBILITY_EFFECT)) {
-                        event.multiply(severityPercentageEffectMap.get(injuredBoneEntry.getKey()));
-                    }
-                }
-            }
-        }
+        List<String> contributingParts = getContributingParts(anatomyComponent, MOBILITY_EFFECT);
+        float multiplier = getMultiplier(injuredBoneComponent, contributingParts);
+        event.multiply(multiplier);
     }
 
     @ReceiveEvent
     public void modifyJumpSpeed(AffectJumpForceEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent, InjuredBoneComponent injuredBoneComponent) {
+        List<String> contributingParts = getContributingParts(anatomyComponent, MOBILITY_EFFECT);
+        float multiplier = getMultiplier(injuredBoneComponent, contributingParts);
+        event.multiply(multiplier);
+    }
+
+    private List<String> getContributingParts(AnatomyComponent anatomyComponent, String effectID) {
+        List<String> contributingParts = Lists.newArrayList();
+        for (Map.Entry<String, AnatomyPartTag> anatomyPartTagEntry : anatomyComponent.parts.entrySet()) {
+            if (anatomyPartTagEntry.getValue().abilities.contains(effectID)) {
+                contributingParts.add(anatomyPartTagEntry.getKey());
+            }
+        }
+        return contributingParts;
+    }
+
+    private float getMultiplier(InjuredBoneComponent injuredBoneComponent, List<String> contributingParts) {
+        int numContributingParts = contributingParts.size();
+        float multipler = 0f;
         for (Map.Entry<String, List<String>> injuredBoneEntry : injuredBoneComponent.parts.entrySet()) {
             for (String injuredBonePart : injuredBoneEntry.getValue()) {
-                //TODO: Temporary for now (since only leg effects are defined), until effects is sorted out.
-                if (injuredBonePart.contains("Leg")) {
-                    if (anatomyComponent.parts.get(injuredBonePart).abilities.contains(MOBILITY_EFFECT)) {
-                        event.multiply(severityPercentageEffectMap.get(injuredBoneEntry.getKey()));
-                    }
+                if (contributingParts.contains(injuredBonePart)) {
+                    multipler += severityPercentageEffectMap.get(injuredBoneEntry.getKey()) / numContributingParts;
                 }
             }
         }
+        return multipler;
     }
 }
