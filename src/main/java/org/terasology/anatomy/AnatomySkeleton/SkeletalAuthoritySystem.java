@@ -48,7 +48,7 @@ public class SkeletalAuthoritySystem extends BaseComponentSystem {
     private float bluntDamageMultiplier = 1.5f;
 
     private String SKELETAL_REGEN_PREFIX = "Skeletal:Regen:";
-    private String SKELETAL_SYSTEM_ID = "SkeletalSystem";
+    private String BONE_CHARACTERISTIC = "bone";
 
     @ReceiveEvent
     public void onRegen(DelayedActionTriggeredEvent event, EntityRef entityRef) {
@@ -67,7 +67,7 @@ public class SkeletalAuthoritySystem extends BaseComponentSystem {
 
     @ReceiveEvent
     public void onBoneDamage(AnatomyPartImpactedEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent) {
-        if (anatomyComponent.parts.get(event.getTargetPart().id).systems.contains(SKELETAL_SYSTEM_ID)) {
+        if (anatomyComponent.parts.get(event.getTargetPart().id).characteristics.contains(BONE_CHARACTERISTIC)) {
             InjuredBoneComponent injuredBoneComponent = entityRef.getComponent(InjuredBoneComponent.class);
             if (injuredBoneComponent == null) {
                 injuredBoneComponent = new InjuredBoneComponent();

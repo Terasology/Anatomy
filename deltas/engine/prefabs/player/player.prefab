@@ -4,8 +4,8 @@
             "head": {
                 "id": "head",
                 "name": "head",
-                "systems": [
-                    "SkeletalSystem"
+                "characteristics": [
+                    "bone"
                 ],
                 "abilities": [
                 ]
@@ -13,8 +13,8 @@
             "torso": {
                 "id": "torso",
                 "name": "torso",
-                "systems": [
-                    "SkeletalSystem"
+                "characteristics": [
+                    "bone"
                 ],
                 "abilities": [
                 ]
@@ -22,8 +22,8 @@
             "leftArm": {
                 "id": "leftArm",
                 "name": "left arm",
-                "systems": [
-                    "SkeletalSystem"
+                "characteristics": [
+                    "bone"
                 ],
                 "abilities": [
                 ]
@@ -31,8 +31,8 @@
             "rightArm": {
                 "id": "rightArm",
                 "name": "right arm",
-                "systems": [
-                    "SkeletalSystem"
+                "characteristics": [
+                    "bone"
                 ],
                 "abilities": [
                 ]
@@ -40,8 +40,8 @@
             "leftLeg": {
                 "id": "leftLeg",
                 "name": "left leg",
-                "systems": [
-                    "SkeletalSystem"
+                "characteristics": [
+                    "bone"
                 ],
                 "abilities": [
                     "mobility"
@@ -50,8 +50,8 @@
             "rightLeg": {
                 "id": "rightLeg",
                 "name": "right leg",
-                "systems": [
-                    "SkeletalSystem"
+                "characteristics": [
+                    "bone"
                 ],
                 "abilities": [
                     "mobility"
