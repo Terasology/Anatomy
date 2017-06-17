@@ -16,6 +16,8 @@
 package org.terasology.anatomy.AnatomySkeleton;
 
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.anatomy.AnatomySkeleton.component.InjuredBoneComponent;
 import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.AnatomyPartTag;
@@ -72,14 +74,17 @@ public class SkeletalEffectsSystem extends BaseComponentSystem {
 
     private float getMultiplier(InjuredBoneComponent injuredBoneComponent, List<String> contributingParts) {
         int numContributingParts = contributingParts.size();
-        float multipler = 0f;
+        int numAffectedContributingParts = 0;
+        float multiplier = 0f;
         for (Map.Entry<String, List<String>> injuredBoneEntry : injuredBoneComponent.parts.entrySet()) {
             for (String injuredBonePart : injuredBoneEntry.getValue()) {
                 if (contributingParts.contains(injuredBonePart)) {
-                    multipler += severityPercentageEffectMap.get(injuredBoneEntry.getKey()) / numContributingParts;
+                    numAffectedContributingParts += 1;
+                    multiplier += severityPercentageEffectMap.get(injuredBoneEntry.getKey()) / numContributingParts;
                 }
             }
         }
-        return multipler;
+        multiplier += 1 - ((float)numAffectedContributingParts / numContributingParts);
+        return multiplier;
     }
 }
