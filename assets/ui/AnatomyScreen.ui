@@ -1,0 +1,147 @@
+{
+  "type": "AnatomyScreenWindow",
+  "skin": "inventoryDefault",
+  "contents": {
+    "type": "relativeLayout",
+    "contents": [
+      {
+        "type": "UIImage",
+        "image": "Anatomy:PaperDoll",
+        "layoutInfo": {
+          "width": 348,
+          "height": 480,
+          "position-horizontal-center": {},
+          "position-vertical-center": {}
+        }
+      },
+      {
+        "type": "UISpace",
+        "id": "centerDummy",
+        "size": [
+          1,
+          1
+        ],
+        "layoutInfo": {
+          "use-content-width": true,
+          "use-content-height": true,
+          "position-horizontal-center": {},
+          "position-vertical-center": {}
+        }
+      },
+      {
+        "type": "UILabel",
+        "id": "Anatomy:head",
+        "text": "Head",
+        "layoutInfo": {
+          "use-content-width": true,
+          "use-content-height": true,
+          "position-top": {
+            "target": "TOP",
+            "widget": "centerDummy",
+            "offset": -200
+          },
+          "position-left": {
+            "target": "LEFT",
+            "widget": "centerDummy",
+            "offset": -16
+          }
+        }
+      },
+      {
+        "type": "UILabel",
+        "id": "Anatomy:torso",
+        "text": "Torso",
+        "layoutInfo": {
+          "use-content-width": true,
+          "use-content-height": true,
+          "position-top": {
+            "target": "TOP",
+            "widget": "centerDummy",
+            "offset": -80
+          },
+          "position-left": {
+            "target": "LEFT",
+            "widget": "centerDummy",
+            "offset": -16
+          }
+        }
+      },
+      {
+        "type": "UILabel",
+        "id": "Anatomy:leftArm",
+        "text": "Left arm",
+        "layoutInfo": {
+          "use-content-width": true,
+          "use-content-height": true,
+          "position-top": {
+            "target": "TOP",
+            "widget": "centerDummy",
+            "offset": -50
+          },
+          "position-left": {
+            "target": "LEFT",
+            "widget": "centerDummy",
+            "offset": -150
+          }
+        }
+      },
+      {
+        "type": "UILabel",
+        "id": "Anatomy:rightArm",
+        "text": "Right arm",
+        "layoutInfo": {
+          "use-content-width": true,
+          "use-content-height": true,
+          "position-top": {
+            "target": "TOP",
+            "widget": "centerDummy",
+            "offset": -50
+          },
+          "position-left": {
+            "target": "LEFT",
+            "widget": "centerDummy",
+            "offset": 80
+          }
+        }
+      },
+      {
+        "type": "UILabel",
+        "id": "Anatomy:leftLeg",
+        "text": "Left leg",
+        "layoutInfo": {
+          "use-content-width": true,
+          "use-content-height": true,
+          "position-top": {
+            "target": "TOP",
+            "widget": "centerDummy",
+            "offset": 120
+          },
+          "position-left": {
+            "target": "LEFT",
+            "widget": "centerDummy",
+            "offset": -70
+          }
+        }
+      },
+      {
+        "type": "UILabel",
+        "id": "Anatomy:rightLeg",
+        "text": "Right leg",
+        "layoutInfo": {
+          "use-content-width": true,
+          "use-content-height": true,
+          "position-top": {
+            "target": "TOP",
+            "widget": "centerDummy",
+            "offset": 120
+          },
+          "position-left": {
+            "target": "LEFT",
+            "widget": "centerDummy",
+            "offset": 10
+          }
+        }
+      }
+    ]
+  }
+}
