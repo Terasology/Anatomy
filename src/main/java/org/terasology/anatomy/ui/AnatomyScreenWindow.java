@@ -15,8 +15,6 @@
  */
 package org.terasology.anatomy.ui;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.terasology.anatomy.event.AnatomyStatusGatheringEvent;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.logic.characters.CharacterComponent;
@@ -25,8 +23,8 @@ import org.terasology.registry.CoreRegistry;
 import org.terasology.rendering.nui.BaseInteractionScreen;
 import org.terasology.rendering.nui.databinding.ReadOnlyBinding;
 import org.terasology.rendering.nui.skin.UISkin;
-import org.terasology.rendering.nui.skin.UISkinBuilder;
 import org.terasology.rendering.nui.widgets.UILabel;
+import org.terasology.utilities.Assets;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +33,9 @@ import java.util.Map;
 public class AnatomyScreenWindow extends BaseInteractionScreen {
     private static final String ANATOMY_PART_PREFIX = "Anatomy:";
     private EntityRef player = EntityRef.NULL;
+
+    private final UISkin greenTextSkin = Assets.getSkin("Anatomy:greenText").get();
+    private final UISkin redTextSkin = Assets.getSkin("Anatomy:redText").get();
 
     @Override
     public void initialise() {
@@ -90,6 +91,7 @@ public class AnatomyScreenWindow extends BaseInteractionScreen {
         player.send(event);
         Map<String, List<String>> partEffectsMap = event.getEffectsMap();
 
+
         Collection<UILabel> labels = findAll(UILabel.class);
         for (UILabel label : labels) {
             if (label.getId().contains(ANATOMY_PART_PREFIX)) {
@@ -97,6 +99,7 @@ public class AnatomyScreenWindow extends BaseInteractionScreen {
                 List<String> partEffects = partEffectsMap.get(partID);
                 if (partEffects == null) {
                     // No effects for this part
+                    label.setSkin(greenTextSkin);
                     label.bindTooltipString(new ReadOnlyBinding<String>() {
                         @Override
                         public String get() {
@@ -105,6 +108,7 @@ public class AnatomyScreenWindow extends BaseInteractionScreen {
                     });
                 } else {
                     // This part has effects
+                    label.setSkin(redTextSkin);
                     label.setTooltipDelay(0);
                     label.bindTooltipString(new ReadOnlyBinding<String>() {
                         @Override

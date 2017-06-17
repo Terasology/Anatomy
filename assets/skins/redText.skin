@@ -1,0 +1,9 @@
+{
+    "inherit": "default",
+    "elements": {
+        "UILabel": {
+            "text-shadowed": false,
+            "text-color": "FF0000FF"
+        }
+    }
+}
