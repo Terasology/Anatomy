@@ -47,11 +47,6 @@ public class AnatomyScreenWindow extends BaseInteractionScreen {
 
     private void reInit() {
         player = CoreRegistry.get(LocalPlayer.class).getCharacterEntity();
-
-        // In case the player has been created yet, exit out early to prevent an error.
-        if (player == EntityRef.NULL) {
-            return;
-        }
     }
 
     @Override

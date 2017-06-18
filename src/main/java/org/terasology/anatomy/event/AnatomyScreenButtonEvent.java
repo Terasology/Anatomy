@@ -21,7 +21,7 @@ import org.terasology.input.DefaultBinding;
 import org.terasology.input.InputType;
 import org.terasology.input.RegisterBindButton;
 
-@RegisterBindButton(id="anatomyScreen", description = "Anatomy Screen", category = "interaction")
+@RegisterBindButton(id = "anatomyScreen", description = "Anatomy Screen", category = "interaction")
 @DefaultBinding(type = InputType.KEY, id = Keyboard.KEY_V)
 public class AnatomyScreenButtonEvent extends BindButtonEvent {
 }
