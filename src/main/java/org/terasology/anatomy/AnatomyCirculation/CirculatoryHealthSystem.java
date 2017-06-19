@@ -15,8 +15,6 @@
  */
 package org.terasology.anatomy.AnatomyCirculation;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.terasology.anatomy.AnatomyCirculation.component.InjuredCirculatoryComponent;
 import org.terasology.anatomy.AnatomyCirculation.event.PartCirculatoryHealthChangedEvent;
 import org.terasology.anatomy.component.AnatomyComponent;
@@ -50,22 +48,20 @@ public class CirculatoryHealthSystem extends BaseComponentSystem {
     private String CIRCULATORY_REGEN_PREFIX = "Circulatory:Regen:";
     private String CIRCULATORY_CHARACTERISTIC = "blood";
 
-    Logger logger = LoggerFactory.getLogger(CirculatoryHealthSystem.class);
-
     @ReceiveEvent
-    public void onRegen(DelayedActionTriggeredEvent event, EntityRef entityRef) {
-        InjuredCirculatoryComponent injuredCirculatoryComponent = entityRef.getComponent(InjuredCirculatoryComponent.class);
-        String partID = event.getActionId().substring(CIRCULATORY_REGEN_PREFIX.length());
-        PartHealthDetails partDetails = injuredCirculatoryComponent.partHealths.get(partID);
-        logger.info(entityRef.toFullDescription());
-        if (partDetails.health >= 0 && partDetails.health != partDetails.maxHealth && partDetails.regenRate != 0) {
-            int healAmount = 0;
-            healAmount = regenerateHealth(partDetails, healAmount);
-            partDetails.health += healAmount;
-            entityRef.saveComponent(injuredCirculatoryComponent);
-            entityRef.send(new PartCirculatoryHealthChangedEvent(partID));
+    public void onRegen(DelayedActionTriggeredEvent event, EntityRef entityRef, InjuredCirculatoryComponent injuredCirculatoryComponent) {
+        if (event.getActionId().startsWith(CIRCULATORY_REGEN_PREFIX)) {
+            String partID = event.getActionId().substring(CIRCULATORY_REGEN_PREFIX.length());
+            PartHealthDetails partDetails = injuredCirculatoryComponent.partHealths.get(partID);
+            if (partDetails.health >= 0 && partDetails.health != partDetails.maxHealth && partDetails.regenRate != 0) {
+                int healAmount = 0;
+                healAmount = regenerateHealth(partDetails, healAmount);
+                partDetails.health += healAmount;
+                entityRef.saveComponent(injuredCirculatoryComponent);
+                entityRef.send(new PartCirculatoryHealthChangedEvent(partID));
+            }
+            delayManager.addDelayedAction(entityRef, CIRCULATORY_REGEN_PREFIX + partID, (long) (1000 / partDetails.regenRate));
         }
-        delayManager.addDelayedAction(entityRef, CIRCULATORY_REGEN_PREFIX + partID, (long) (1000 / partDetails.regenRate));
     }
 
     @ReceiveEvent

@@ -51,18 +51,19 @@ public class SkeletalAuthoritySystem extends BaseComponentSystem {
     private String BONE_CHARACTERISTIC = "bone";
 
     @ReceiveEvent
-    public void onRegen(DelayedActionTriggeredEvent event, EntityRef entityRef) {
-        InjuredBoneComponent injuredBoneComponent = entityRef.getComponent(InjuredBoneComponent.class);
-        String partID = event.getActionId().substring(SKELETAL_REGEN_PREFIX.length());
-        PartHealthDetails partDetails = injuredBoneComponent.partHealths.get(partID);
-        if (partDetails.health >= 0 && partDetails.health != partDetails.maxHealth && partDetails.regenRate != 0) {
-            int healAmount = 0;
-            healAmount = regenerateHealth(partDetails, healAmount);
-            partDetails.health += healAmount;
-            entityRef.saveComponent(injuredBoneComponent);
-            entityRef.send(new BoneHealthChangedEvent(partID));
+    public void onRegen(DelayedActionTriggeredEvent event, EntityRef entityRef, InjuredBoneComponent injuredBoneComponent) {
+        if (event.getActionId().startsWith(SKELETAL_REGEN_PREFIX)) {
+            String partID = event.getActionId().substring(SKELETAL_REGEN_PREFIX.length());
+            PartHealthDetails partDetails = injuredBoneComponent.partHealths.get(partID);
+            if (partDetails.health >= 0 && partDetails.health != partDetails.maxHealth && partDetails.regenRate != 0) {
+                int healAmount = 0;
+                healAmount = regenerateHealth(partDetails, healAmount);
+                partDetails.health += healAmount;
+                entityRef.saveComponent(injuredBoneComponent);
+                entityRef.send(new BoneHealthChangedEvent(partID));
+            }
+            delayManager.addDelayedAction(entityRef, SKELETAL_REGEN_PREFIX + partID, (long) (1000 / partDetails.regenRate));
         }
-        delayManager.addDelayedAction(entityRef, SKELETAL_REGEN_PREFIX + partID, (long) (1000 / partDetails.regenRate));
     }
 
     @ReceiveEvent
