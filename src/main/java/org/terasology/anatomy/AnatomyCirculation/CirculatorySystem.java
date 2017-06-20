@@ -125,7 +125,7 @@ public class CirculatorySystem extends BaseComponentSystem {
         InjuredCirculatoryComponent injuredCirculatoryComponent = character.getComponent(InjuredCirculatoryComponent.class);
         String result = "Blood level : ";
         if (injuredCirculatoryComponent != null) {
-            result += injuredCirculatoryComponent.bloodLevel + "/" + injuredCirculatoryComponent.maxBloodLevel + "\n";
+            result += injuredCirculatoryComponent.bloodLevel + "/" + injuredCirculatoryComponent.maxBloodLevel + " Regen rate: " + injuredCirculatoryComponent.bloodRegenRate + "\n";
             result += "Circulatory system healths :\n";
             for (Map.Entry<String, PartHealthDetails> partHealthDetailsEntry : injuredCirculatoryComponent.partHealths.entrySet()) {
                 result += partHealthDetailsEntry.getKey() + " :" + partHealthDetailsEntry.getValue().health + "/" + partHealthDetailsEntry.getValue().maxHealth + "\n";

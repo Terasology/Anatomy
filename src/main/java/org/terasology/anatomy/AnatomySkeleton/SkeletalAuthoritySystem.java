@@ -59,6 +59,7 @@ public class SkeletalAuthoritySystem extends BaseComponentSystem {
                 int healAmount = 0;
                 healAmount = regenerateHealth(partDetails, healAmount);
                 partDetails.health += healAmount;
+                partDetails.health = TeraMath.clamp(partDetails.health, 0, partDetails.maxHealth);
                 entityRef.saveComponent(injuredBoneComponent);
                 entityRef.send(new BoneHealthChangedEvent(partID));
             }

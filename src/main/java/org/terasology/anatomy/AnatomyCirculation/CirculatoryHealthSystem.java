@@ -16,6 +16,7 @@
 package org.terasology.anatomy.AnatomyCirculation;
 
 import org.terasology.anatomy.AnatomyCirculation.component.InjuredCirculatoryComponent;
+import org.terasology.anatomy.AnatomyCirculation.event.BloodLevelChangedEvent;
 import org.terasology.anatomy.AnatomyCirculation.event.PartCirculatoryEffectChangedEvent;
 import org.terasology.anatomy.AnatomyCirculation.event.PartCirculatoryHealthChangedEvent;
 import org.terasology.anatomy.component.AnatomyComponent;
@@ -68,13 +69,14 @@ public class CirculatoryHealthSystem extends BaseComponentSystem {
         if (event.getActionId().startsWith(CIRCULATORY_BLOOD_REGEN_PREFIX)) {
             if (injuredCirculatoryComponent.bloodLevel >= 0 && injuredCirculatoryComponent.bloodLevel <= injuredCirculatoryComponent.maxBloodLevel && injuredCirculatoryComponent.bloodRegenRate != 0) {
                 int healAmount = 0;
-                healAmount += injuredCirculatoryComponent.bloodRegenRate;
-                injuredCirculatoryComponent.nextRegenTick = injuredCirculatoryComponent.nextRegenTick + 1000L;
+                healAmount += injuredCirculatoryComponent.bloodRegenRate / TeraMath.fastAbs(injuredCirculatoryComponent.bloodRegenRate);
+                injuredCirculatoryComponent.nextRegenTick = time.getGameTimeInMs() + (long) (1000 / TeraMath.fastAbs(injuredCirculatoryComponent.bloodRegenRate));
                 injuredCirculatoryComponent.bloodLevel += healAmount;
                 injuredCirculatoryComponent.bloodLevel = TeraMath.clamp(injuredCirculatoryComponent.bloodLevel, 0, injuredCirculatoryComponent.maxBloodLevel);
                 entityRef.saveComponent(injuredCirculatoryComponent);
+                entityRef.send(new BloodLevelChangedEvent());
             }
-            delayManager.addDelayedAction(entityRef, CIRCULATORY_BLOOD_REGEN_PREFIX, (long) 1000);
+            delayManager.addDelayedAction(entityRef, CIRCULATORY_BLOOD_REGEN_PREFIX, (long) (1000 / TeraMath.fastAbs(injuredCirculatoryComponent.bloodRegenRate)));
         }
     }
 
@@ -87,6 +89,7 @@ public class CirculatoryHealthSystem extends BaseComponentSystem {
                 int healAmount = 0;
                 healAmount = regenerateHealth(partDetails, healAmount);
                 partDetails.health += healAmount;
+                partDetails.health = TeraMath.clamp(partDetails.health, 0, partDetails.maxHealth);
                 entityRef.saveComponent(injuredCirculatoryComponent);
                 entityRef.send(new PartCirculatoryHealthChangedEvent(partID));
             }
