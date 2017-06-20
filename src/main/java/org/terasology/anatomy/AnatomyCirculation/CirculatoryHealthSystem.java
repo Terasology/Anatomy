@@ -16,6 +16,7 @@
 package org.terasology.anatomy.AnatomyCirculation;
 
 import org.terasology.anatomy.AnatomyCirculation.component.InjuredCirculatoryComponent;
+import org.terasology.anatomy.AnatomyCirculation.event.PartCirculatoryEffectChangedEvent;
 import org.terasology.anatomy.AnatomyCirculation.event.PartCirculatoryHealthChangedEvent;
 import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.PartHealthDetails;
@@ -31,6 +32,10 @@ import org.terasology.logic.delay.DelayedActionTriggeredEvent;
 import org.terasology.math.TeraMath;
 import org.terasology.registry.In;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @RegisterSystem(value = RegisterMode.AUTHORITY)
 public class CirculatoryHealthSystem extends BaseComponentSystem {
     @In
@@ -42,14 +47,39 @@ public class CirculatoryHealthSystem extends BaseComponentSystem {
     @In
     private DelayManager delayManager;
 
+    private Map<Integer, Float> severityBleedingRateMap = new HashMap<>();
+
     private float bluntDamageMultiplier = 0.5f;
     private float pierceDamageMultiplier = 1.5f;
 
     private String CIRCULATORY_REGEN_PREFIX = "Circulatory:Regen:";
+    private String CIRCULATORY_BLOOD_REGEN_PREFIX = "Circulatory:BloodRegen:";
     private String CIRCULATORY_CHARACTERISTIC = "blood";
 
+    @Override
+    public void initialise() {
+        severityBleedingRateMap.put(1, -0.5f);
+        severityBleedingRateMap.put(2, -1.0f);
+        severityBleedingRateMap.put(3, -2.0f);
+    }
+
     @ReceiveEvent
-    public void onRegen(DelayedActionTriggeredEvent event, EntityRef entityRef, InjuredCirculatoryComponent injuredCirculatoryComponent) {
+    public void onBloodLevelRegen(DelayedActionTriggeredEvent event, EntityRef entityRef, InjuredCirculatoryComponent injuredCirculatoryComponent) {
+        if (event.getActionId().startsWith(CIRCULATORY_BLOOD_REGEN_PREFIX)) {
+            if (injuredCirculatoryComponent.bloodLevel >= 0 && injuredCirculatoryComponent.bloodLevel <= injuredCirculatoryComponent.maxBloodLevel && injuredCirculatoryComponent.bloodRegenRate != 0) {
+                int healAmount = 0;
+                healAmount += injuredCirculatoryComponent.bloodRegenRate;
+                injuredCirculatoryComponent.nextRegenTick = injuredCirculatoryComponent.nextRegenTick + 1000L;
+                injuredCirculatoryComponent.bloodLevel += healAmount;
+                injuredCirculatoryComponent.bloodLevel = TeraMath.clamp(injuredCirculatoryComponent.bloodLevel, 0, injuredCirculatoryComponent.maxBloodLevel);
+                entityRef.saveComponent(injuredCirculatoryComponent);
+            }
+            delayManager.addDelayedAction(entityRef, CIRCULATORY_BLOOD_REGEN_PREFIX, (long) 1000);
+        }
+    }
+
+    @ReceiveEvent
+    public void onPartHealthRegen(DelayedActionTriggeredEvent event, EntityRef entityRef, InjuredCirculatoryComponent injuredCirculatoryComponent) {
         if (event.getActionId().startsWith(CIRCULATORY_REGEN_PREFIX)) {
             String partID = event.getActionId().substring(CIRCULATORY_REGEN_PREFIX.length());
             PartHealthDetails partDetails = injuredCirculatoryComponent.partHealths.get(partID);
@@ -65,6 +95,16 @@ public class CirculatoryHealthSystem extends BaseComponentSystem {
     }
 
     @ReceiveEvent
+    public void onBleedingRateChanged(PartCirculatoryEffectChangedEvent event, EntityRef entityRef, InjuredCirculatoryComponent injuredCirculatoryComponent) {
+        float bloodRegenRate = injuredCirculatoryComponent.baseBloodRegenRate;
+        for (Map.Entry<String, List<String>> severityPartsEntry : injuredCirculatoryComponent.parts.entrySet()) {
+            bloodRegenRate += severityPartsEntry.getValue().size() * severityBleedingRateMap.get(Integer.parseInt(severityPartsEntry.getKey()));
+        }
+        injuredCirculatoryComponent.bloodRegenRate = bloodRegenRate;
+        entityRef.saveComponent(injuredCirculatoryComponent);
+    }
+
+    @ReceiveEvent
     public void onCirculatoryDamage(AnatomyPartImpactedEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent) {
         if (anatomyComponent.parts.get(event.getTargetPart().id).characteristics.contains(CIRCULATORY_CHARACTERISTIC)) {
             InjuredCirculatoryComponent injuredCirculatoryComponent = entityRef.getComponent(InjuredCirculatoryComponent.class);
@@ -76,8 +116,9 @@ public class CirculatoryHealthSystem extends BaseComponentSystem {
             if (partHealthDetails == null) {
                 partHealthDetails = new PartHealthDetails();
                 injuredCirculatoryComponent.partHealths.put(event.getTargetPart().id, partHealthDetails);
-                // Part has been injured for the first time, so add delayed regen event.
+                // Part has been injured for the first time, so add delayed part health regen event and blood level regen event.
                 delayManager.addDelayedAction(entityRef, CIRCULATORY_REGEN_PREFIX + event.getTargetPart().id, (long) (1000 / partHealthDetails.regenRate));
+                delayManager.addDelayedAction(entityRef, CIRCULATORY_BLOOD_REGEN_PREFIX, (long) 1000);
             }
             int damageAmount = event.getAmount();
             if (event.getDamageType().getName().equals("Equipment:pierceDamage")) {

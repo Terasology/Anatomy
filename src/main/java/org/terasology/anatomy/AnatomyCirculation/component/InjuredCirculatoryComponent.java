@@ -35,4 +35,18 @@ public class InjuredCirculatoryComponent implements Component {
      */
     @Replicate
     public Map<String, List<String>> parts = new HashMap<>();
+
+    @Replicate
+    public int bloodLevel = 100;
+
+    @Replicate
+    public int maxBloodLevel = 100;
+
+    @Replicate
+    public float baseBloodRegenRate = 1.0f;
+
+    @Replicate
+    public float bloodRegenRate = 1.0f;
+
+    public long nextRegenTick;
 }

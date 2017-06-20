@@ -17,6 +17,7 @@ package org.terasology.anatomy.AnatomyCirculation;
 
 import com.google.common.collect.Lists;
 import org.terasology.anatomy.AnatomyCirculation.component.InjuredCirculatoryComponent;
+import org.terasology.anatomy.AnatomyCirculation.event.PartCirculatoryEffectChangedEvent;
 import org.terasology.anatomy.AnatomyCirculation.event.PartCirculatoryHealthChangedEvent;
 import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.PartHealthDetails;
@@ -89,6 +90,7 @@ public class CirculatorySystem extends BaseComponentSystem {
             injuredCirculatoryComponent.parts.put(String.valueOf(severity), Lists.newArrayList(partId));
         }
         entityRef.saveComponent(injuredCirculatoryComponent);
+        entityRef.send(new PartCirculatoryEffectChangedEvent());
     }
 
     private void removeEffect(EntityRef entityRef, String partId) {
@@ -98,6 +100,7 @@ public class CirculatorySystem extends BaseComponentSystem {
                 partsOfSeverity.getValue().remove(partId);
             }
             entityRef.saveComponent(injuredCirculatoryComponent);
+            entityRef.send(new PartCirculatoryEffectChangedEvent());
         }
     }
 
@@ -120,8 +123,10 @@ public class CirculatorySystem extends BaseComponentSystem {
     public String showCirculatoryHealths(@Sender EntityRef client) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         InjuredCirculatoryComponent injuredCirculatoryComponent = character.getComponent(InjuredCirculatoryComponent.class);
-        String result = "Circulatory system healths :\n";
+        String result = "Blood level : ";
         if (injuredCirculatoryComponent != null) {
+            result += injuredCirculatoryComponent.bloodLevel + "/" + injuredCirculatoryComponent.maxBloodLevel + "\n";
+            result += "Circulatory system healths :\n";
             for (Map.Entry<String, PartHealthDetails> partHealthDetailsEntry : injuredCirculatoryComponent.partHealths.entrySet()) {
                 result += partHealthDetailsEntry.getKey() + " :" + partHealthDetailsEntry.getValue().health + "/" + partHealthDetailsEntry.getValue().maxHealth + "\n";
             }
