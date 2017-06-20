@@ -15,8 +15,6 @@
  */
 package org.terasology.anatomy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.AnatomyPartTag;
 import org.terasology.anatomy.event.AnatomyPartImpactedEvent;
@@ -41,7 +39,6 @@ import java.util.Map;
 
 /**
  * Provides a basic system for managing an entity's anatomy.
- * Much of this system is still under development.
  */
 @RegisterSystem
 public class AnatomySystem extends BaseComponentSystem {
@@ -50,8 +47,9 @@ public class AnatomySystem extends BaseComponentSystem {
 
     private Random random = new FastRandom();
 
-    private static final Logger logger = LoggerFactory.getLogger(AnatomySystem.class);
-
+    /**
+     * Receives an {@link OnDamagedEvent} and allocates the damage to an anatomy part.
+     */
     @ReceiveEvent
     public void onDamage(OnDamagedEvent event, EntityRef entity, AnatomyComponent comp) {
         if (comp != null) {
@@ -62,6 +60,9 @@ public class AnatomySystem extends BaseComponentSystem {
         }
     }
 
+    /**
+     * Console command - Damages a particular anatomy part for a given amount.
+     */
     @Command(shortDescription = "Damage Anatomy part for amount")
     public String dmgAnatomyPart(@Sender EntityRef entityRef, @CommandParam("name") String partName, @CommandParam("amount") int amount) {
         EntityRef clientEntity = entityRef.getComponent(ClientComponent.class).character;
@@ -75,6 +76,9 @@ public class AnatomySystem extends BaseComponentSystem {
         }
     }
 
+    /**
+     * Console command - Damages all anatomy parts for a given amount.
+     */
     @Command(shortDescription = "Damage ALL Anatomy parts for amount")
     public String dmgAnatomyPartAll(@Sender EntityRef entityRef, @CommandParam("amount") int amount) {
         EntityRef clientEntity = entityRef.getComponent(ClientComponent.class).character;
@@ -89,6 +93,9 @@ public class AnatomySystem extends BaseComponentSystem {
         return result;
     }
 
+    /**
+     * Console command - Shows a list of anatomy effects on each part.
+     */
     @Command(shortDescription = "Lists anatomy effects on all parts")
     public String showAnatomyEffects(@Sender EntityRef client) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
@@ -106,6 +113,11 @@ public class AnatomySystem extends BaseComponentSystem {
         return result;
     }
 
+    /**
+     * Returns the anatomy part name using it's ID.
+     *
+     * @return Name of the part
+     */
     public String getAnatomyNameFromID(String partID, AnatomyComponent component) {
         return component.parts.get(partID).name;
     }

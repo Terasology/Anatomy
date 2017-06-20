@@ -21,6 +21,9 @@ import org.terasology.network.Replicate;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This component defines the anatomical structure and abilities of a creature.
+ */
 public class AnatomyComponent implements Component {
     @Replicate
     public Map<String, AnatomyPartTag> parts = new HashMap<>();
