@@ -28,7 +28,9 @@ import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.logic.console.commandSystem.annotations.Sender;
+import org.terasology.logic.players.event.OnPlayerRespawnedEvent;
 import org.terasology.network.ClientComponent;
+import org.terasology.protobuf.EntityData;
 
 import java.util.HashMap;
 import java.util.List;
@@ -117,6 +119,11 @@ public class CirculatorySystem extends BaseComponentSystem {
             severity = 3;
         }
         return severity;
+    }
+
+    @ReceiveEvent
+    public void onPlayerRespawn(OnPlayerRespawnedEvent event, EntityRef entityRef, InjuredCirculatoryComponent injuredCirculatoryComponent) {
+        entityRef.removeComponent(InjuredCirculatoryComponent.class);
     }
 
     @Command(shortDescription = "Show circulatory healths of all injured parts")

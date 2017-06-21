@@ -27,6 +27,7 @@ import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.logic.console.commandSystem.annotations.Sender;
+import org.terasology.logic.players.event.OnPlayerRespawnedEvent;
 import org.terasology.network.ClientComponent;
 
 import java.util.HashMap;
@@ -117,6 +118,11 @@ public class SkeletalSystem extends BaseComponentSystem {
             severity = 3;
         }
         return severity;
+    }
+
+    @ReceiveEvent
+    public void onPlayerRespawn(OnPlayerRespawnedEvent event, EntityRef entityRef, InjuredBoneComponent injuredBoneComponent) {
+        entityRef.removeComponent(InjuredBoneComponent.class);
     }
 
     @Command(shortDescription = "Show bone healths of all injured parts")
