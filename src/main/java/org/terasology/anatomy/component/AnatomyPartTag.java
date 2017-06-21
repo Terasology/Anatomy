@@ -34,9 +34,15 @@ public class AnatomyPartTag {
     @Replicate
     public String name = "";
 
+    /**
+     * List of characteristics of a part like bone, blood etc.
+     */
     @Replicate
     public List<String> characteristics = Lists.newArrayList();
 
+    /**
+     * List of ability that this part grants/contributes to.
+     */
     @Replicate
     public List<String> abilities = Lists.newArrayList();
 }

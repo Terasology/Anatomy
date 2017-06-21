@@ -30,6 +30,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This represents the Anatomy Screen, which contains information about the effects on the player.
+ */
 public class AnatomyScreenWindow extends BaseInteractionScreen {
     private static final String ANATOMY_PART_PREFIX = "Anatomy:";
     private EntityRef player = EntityRef.NULL;
@@ -45,6 +48,9 @@ public class AnatomyScreenWindow extends BaseInteractionScreen {
     protected void initializeWithInteractionTarget(EntityRef interactionTarget) {
     }
 
+    /**
+     * Gets the player entity from the Core Registry.
+     */
     private void reInit() {
         player = CoreRegistry.get(LocalPlayer.class).getCharacterEntity();
     }

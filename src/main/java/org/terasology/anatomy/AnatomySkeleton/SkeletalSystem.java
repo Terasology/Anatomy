@@ -39,6 +39,9 @@ import java.util.Map;
  */
 @RegisterSystem
 public class SkeletalSystem extends BaseComponentSystem {
+    /**
+     * Maps each effect severity to its display name.
+     */
     private Map<Integer, String> severityNameMap = new HashMap<>();
 
     private float DAMAGED_BONE_THRESHOLD = 0.6f;
@@ -52,6 +55,9 @@ public class SkeletalSystem extends BaseComponentSystem {
         severityNameMap.put(3, "Shattered bone");
     }
 
+    /**
+     * Applies or removes effects based on severity when a part's skeletal health changes.
+     */
     @ReceiveEvent
     public void onBoneHealthChanged(BoneHealthChangedEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent, InjuredBoneComponent injuredBoneComponent) {
         int severity = getEffectSeverity(event.partId, injuredBoneComponent);
@@ -62,6 +68,9 @@ public class SkeletalSystem extends BaseComponentSystem {
         }
     }
 
+    /**
+     * Adds part skeletal statuses to the {@link AnatomyStatusGatheringEvent}.
+     */
     @ReceiveEvent
     public void onGather(AnatomyStatusGatheringEvent event, EntityRef entityRef, InjuredBoneComponent injuredBoneComponent) {
         if (event.getSystemFilter().equals("") || event.getSystemFilter().equals("Skeletal")) {
@@ -73,20 +82,27 @@ public class SkeletalSystem extends BaseComponentSystem {
         }
     }
 
+    /**
+     * Applies effect of particular severity to an anatomy part.
+     */
     private void applyEffect(EntityRef entityRef, String partId, int severity) {
         if (entityRef.getComponent(InjuredBoneComponent.class) == null) {
             entityRef.addComponent(new InjuredBoneComponent());
         }
         InjuredBoneComponent injuredBoneComponent = entityRef.getComponent(InjuredBoneComponent.class);
         for (Map.Entry<String, List<String>> partsOfSeverity : injuredBoneComponent.parts.entrySet()) {
+            // If the part already has a skeletal effect.
             if (partsOfSeverity.getValue().contains(partId)) {
+                // If the severity matches, return.
                 if (Integer.parseInt(partsOfSeverity.getKey()) == severity) {
                     return;
                 } else {
+                    // Else, remove the incorrect severity effect.
                     partsOfSeverity.getValue().remove(partId);
                 }
             }
         }
+        // Add the skeletal effect with correct severity.
         if (injuredBoneComponent.parts.containsKey(String.valueOf(severity))) {
             injuredBoneComponent.parts.get(String.valueOf(severity)).add(partId);
         } else {
@@ -95,6 +111,9 @@ public class SkeletalSystem extends BaseComponentSystem {
         entityRef.saveComponent(injuredBoneComponent);
     }
 
+    /**
+     * Removes the skeletal effect corresponding to an anatomy part.
+     */
     private void removeEffect(EntityRef entityRef, String partId) {
         InjuredBoneComponent injuredBoneComponent = entityRef.getComponent(InjuredBoneComponent.class);
         if (injuredBoneComponent != null) {
@@ -105,6 +124,11 @@ public class SkeletalSystem extends BaseComponentSystem {
         }
     }
 
+    /**
+     * Gets the effect severity to be applied to a part based on it's skeletal health.
+     *
+     * @return The severity of the skeletal effect to be applied.
+     */
     private int getEffectSeverity(String partId, InjuredBoneComponent injuredBoneComponent) {
         int maxHealth = injuredBoneComponent.partHealths.get(partId).maxHealth;
         int health = injuredBoneComponent.partHealths.get(partId).health;
@@ -125,6 +149,9 @@ public class SkeletalSystem extends BaseComponentSystem {
         entityRef.removeComponent(InjuredBoneComponent.class);
     }
 
+    /**
+     * Console command - Shows the skeletal healths of injured parts.
+     */
     @Command(shortDescription = "Show bone healths of all injured parts")
     public String showBoneHealths(@Sender EntityRef client) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
@@ -138,6 +165,9 @@ public class SkeletalSystem extends BaseComponentSystem {
         return result;
     }
 
+    /**
+     * Console command - Heals all parts' skeletal healths to max.
+     */
     @Command(shortDescription = "Heal all bone parts to full health")
     public String healAllBones(@Sender EntityRef client) {
         EntityRef character = client.getComponent(ClientComponent.class).character;

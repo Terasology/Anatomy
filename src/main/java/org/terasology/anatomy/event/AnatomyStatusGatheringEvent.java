@@ -18,11 +18,13 @@ package org.terasology.anatomy.event;
 import com.google.common.collect.Lists;
 import org.terasology.entitySystem.event.Event;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This event is sent to gather all anatomical part statuses from different systems.
+ */
 public class AnatomyStatusGatheringEvent implements Event {
     /**
      * Decides which systems will respond to the event. "" means all, or "Skeletal" for only skeletal system.

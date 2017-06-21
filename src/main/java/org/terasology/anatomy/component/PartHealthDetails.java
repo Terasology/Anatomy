@@ -18,6 +18,9 @@ package org.terasology.anatomy.component;
 import org.terasology.network.Replicate;
 import org.terasology.reflection.MappedContainer;
 
+/**
+ * Container for all the health details corresponding to a part in a system.
+ */
 @MappedContainer
 public class PartHealthDetails {
     @Replicate
@@ -35,10 +38,5 @@ public class PartHealthDetails {
     public float waitBeforeRegen = 10.0f;
 
     public PartHealthDetails() {
-    }
-
-    public PartHealthDetails(int maxHealth) {
-        this.health = maxHealth;
-        this.maxHealth = maxHealth;
     }
 }

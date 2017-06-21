@@ -26,6 +26,9 @@ import org.terasology.network.ClientComponent;
 import org.terasology.registry.In;
 import org.terasology.rendering.nui.NUIManager;
 
+/**
+ * This system listens for the AnatomyScreen button press and triggers the nuiManager.
+ */
 @RegisterSystem(RegisterMode.CLIENT)
 public class AnatomyScreenClientSystem extends BaseComponentSystem {
     private static final String ANATOMY_SCREEN = "Anatomy:AnatomyScreen";
