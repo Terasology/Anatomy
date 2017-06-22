@@ -30,7 +30,6 @@ import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.logic.console.commandSystem.annotations.Sender;
 import org.terasology.logic.players.event.OnPlayerRespawnedEvent;
 import org.terasology.network.ClientComponent;
-import org.terasology.protobuf.EntityData;
 
 import java.util.HashMap;
 import java.util.List;
@@ -130,13 +129,16 @@ public class CirculatorySystem extends BaseComponentSystem {
     public String showCirculatoryHealths(@Sender EntityRef client) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         InjuredCirculatoryComponent injuredCirculatoryComponent = character.getComponent(InjuredCirculatoryComponent.class);
-        String result = "Blood level : ";
+        String result = "";
         if (injuredCirculatoryComponent != null) {
-            result += injuredCirculatoryComponent.bloodLevel + "/" + injuredCirculatoryComponent.maxBloodLevel + " Regen rate: " + injuredCirculatoryComponent.bloodRegenRate + "\n";
+            result += "Blood level : ";
+            result += injuredCirculatoryComponent.bloodLevel + "/" + injuredCirculatoryComponent.maxBloodLevel + " Blood regen rate: " + injuredCirculatoryComponent.bloodRegenRate + "\n";
             result += "Circulatory system healths :\n";
             for (Map.Entry<String, PartHealthDetails> partHealthDetailsEntry : injuredCirculatoryComponent.partHealths.entrySet()) {
                 result += partHealthDetailsEntry.getKey() + " :" + partHealthDetailsEntry.getValue().health + "/" + partHealthDetailsEntry.getValue().maxHealth + "\n";
             }
+        } else {
+            result += "Circulatory system healthy.\n";
         }
         return result;
     }

@@ -19,17 +19,24 @@ import org.terasology.anatomy.AnatomyCirculation.component.InjuredCirculatoryCom
 import org.terasology.anatomy.AnatomyCirculation.event.BloodLevelChangedEvent;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
+import org.terasology.entitySystem.prefab.Prefab;
+import org.terasology.entitySystem.prefab.PrefabManager;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.health.DestroyEvent;
-import org.terasology.logic.health.EngineDamageTypes;
+import org.terasology.registry.In;
 
 @RegisterSystem
 public class CirculatoryEffectsSystem extends BaseComponentSystem {
+
+    @In
+    private PrefabManager prefabManager;
+
     @ReceiveEvent
     public void onBloodLevelChanged(BloodLevelChangedEvent event, EntityRef entityRef, InjuredCirculatoryComponent injuredCirculatoryComponent) {
         if (injuredCirculatoryComponent.bloodLevel <= 0) {
-            entityRef.send(new DestroyEvent(entityRef, EntityRef.NULL, EngineDamageTypes.DIRECT.get()));
+            Prefab bloodLossDamage = prefabManager.getPrefab("Anatomy:bloodLoss");
+            entityRef.send(new DestroyEvent(EntityRef.NULL, EntityRef.NULL, bloodLossDamage));
         }
     }
 }

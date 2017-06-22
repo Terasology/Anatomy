@@ -156,11 +156,14 @@ public class SkeletalSystem extends BaseComponentSystem {
     public String showBoneHealths(@Sender EntityRef client) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         InjuredBoneComponent injuredBoneComponent = character.getComponent(InjuredBoneComponent.class);
-        String result = "Bone healths :\n";
+        String result = "";
         if (injuredBoneComponent != null) {
+            result += "Bone healths :\n";
             for (Map.Entry<String, PartHealthDetails> partHealthDetailsEntry : injuredBoneComponent.partHealths.entrySet()) {
                 result += partHealthDetailsEntry.getKey() + " :" + partHealthDetailsEntry.getValue().health + "/" + partHealthDetailsEntry.getValue().maxHealth + "\n";
             }
+        } else {
+            result += "Skeletal system healthy.\n";
         }
         return result;
     }
