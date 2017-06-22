@@ -28,7 +28,7 @@ import org.terasology.logic.health.EngineDamageTypes;
 public class CirculatoryEffectsSystem extends BaseComponentSystem {
     @ReceiveEvent
     public void onBloodLevelChanged(BloodLevelChangedEvent event, EntityRef entityRef, InjuredCirculatoryComponent injuredCirculatoryComponent) {
-        if (injuredCirculatoryComponent.bloodLevel == 0) {
+        if (injuredCirculatoryComponent.bloodLevel <= 0) {
             entityRef.send(new DestroyEvent(entityRef, EntityRef.NULL, EngineDamageTypes.DIRECT.get()));
         }
     }

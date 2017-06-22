@@ -131,9 +131,7 @@ public class CirculatoryHealthSystem extends BaseComponentSystem {
                 damageAmount *= bluntDamageMultiplier;
             }
             partHealthDetails.health -= damageAmount;
-            if (partHealthDetails.health < 0) {
-                partHealthDetails.health = 0;
-            }
+            partHealthDetails.health = TeraMath.clamp(partHealthDetails.health, 0, partHealthDetails.maxHealth);
             partHealthDetails.nextRegenTick = time.getGameTimeInMs() + TeraMath.floorToInt(partHealthDetails.waitBeforeRegen * 1000);
             entityRef.saveComponent(injuredCirculatoryComponent);
             entityRef.send(new PartCirculatoryHealthChangedEvent(event.getTargetPart().id));

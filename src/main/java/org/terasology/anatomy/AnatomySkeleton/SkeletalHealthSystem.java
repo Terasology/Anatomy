@@ -35,7 +35,7 @@ import org.terasology.registry.In;
  * This authority system manages the Skeletal system health updates.
  */
 @RegisterSystem(value = RegisterMode.AUTHORITY)
-public class SkeletalAuthoritySystem extends BaseComponentSystem {
+public class SkeletalHealthSystem extends BaseComponentSystem {
     @In
     private org.terasology.engine.Time time;
 
@@ -87,9 +87,7 @@ public class SkeletalAuthoritySystem extends BaseComponentSystem {
                 damageAmount *= bluntDamageMultiplier;
             }
             partHealthDetails.health -= damageAmount;
-            if (partHealthDetails.health < 0) {
-                partHealthDetails.health = 0;
-            }
+            partHealthDetails.health = TeraMath.clamp(partHealthDetails.health, 0, partHealthDetails.maxHealth);
             partHealthDetails.nextRegenTick = time.getGameTimeInMs() + TeraMath.floorToInt(partHealthDetails.waitBeforeRegen * 1000);
             entityRef.saveComponent(injuredBoneComponent);
             entityRef.send(new BoneHealthChangedEvent(event.getTargetPart().id));
