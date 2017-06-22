@@ -23,6 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This component contains injured skeletal system details.
+ */
 public class InjuredBoneComponent implements Component {
     /**
      * Maps each part to its health details.
