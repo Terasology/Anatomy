@@ -27,6 +27,7 @@ import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.console.commandSystem.annotations.Command;
 import org.terasology.logic.console.commandSystem.annotations.Sender;
+import org.terasology.logic.players.event.OnPlayerRespawnedEvent;
 import org.terasology.network.ClientComponent;
 
 import java.util.HashMap;
@@ -143,6 +144,11 @@ public class SkeletalSystem extends BaseComponentSystem {
         return severity;
     }
 
+    @ReceiveEvent
+    public void onPlayerRespawn(OnPlayerRespawnedEvent event, EntityRef entityRef, InjuredBoneComponent injuredBoneComponent) {
+        entityRef.removeComponent(InjuredBoneComponent.class);
+    }
+
     /**
      * Console command - Shows the skeletal healths of injured parts.
      */
@@ -150,11 +156,14 @@ public class SkeletalSystem extends BaseComponentSystem {
     public String showBoneHealths(@Sender EntityRef client) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         InjuredBoneComponent injuredBoneComponent = character.getComponent(InjuredBoneComponent.class);
-        String result = "Bone healths :\n";
+        String result = "";
         if (injuredBoneComponent != null) {
+            result += "Bone healths :\n";
             for (Map.Entry<String, PartHealthDetails> partHealthDetailsEntry : injuredBoneComponent.partHealths.entrySet()) {
                 result += partHealthDetailsEntry.getKey() + " :" + partHealthDetailsEntry.getValue().health + "/" + partHealthDetailsEntry.getValue().maxHealth + "\n";
             }
+        } else {
+            result += "Skeletal system healthy.\n";
         }
         return result;
     }
@@ -172,6 +181,6 @@ public class SkeletalSystem extends BaseComponentSystem {
                 character.send(new BoneHealthChangedEvent(partHealthDetailsEntry.getKey()));
             }
         }
-        return "Healths fully restored.";
+        return "Skeletal healths fully restored.";
     }
 }
