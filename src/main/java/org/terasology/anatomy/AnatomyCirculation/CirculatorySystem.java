@@ -153,6 +153,6 @@ public class CirculatorySystem extends BaseComponentSystem {
                 character.send(new PartCirculatoryHealthChangedEvent(partHealthDetailsEntry.getKey()));
             }
         }
-        return "Healths fully restored.";
+        return "Circulatory healths fully restored.";
     }
 }

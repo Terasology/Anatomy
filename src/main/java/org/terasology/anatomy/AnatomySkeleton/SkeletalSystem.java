@@ -181,6 +181,6 @@ public class SkeletalSystem extends BaseComponentSystem {
                 character.send(new BoneHealthChangedEvent(partHealthDetailsEntry.getKey()));
             }
         }
-        return "Healths fully restored.";
+        return "Skeletal healths fully restored.";
     }
 }
