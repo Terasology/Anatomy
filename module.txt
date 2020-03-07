@@ -5,7 +5,7 @@
     "displayName" : "Anatomy",
     "description" : "A basic anatomy system for players, NPCs, and creatures alike.",
     "dependencies" : [
-        {"id" : "Core", "minVersion" : "2.0.0"}
+        {"id" : "Core", "minVersion" : "3.0.0"}
     ],
     "serverSideOnly" : false
 }
