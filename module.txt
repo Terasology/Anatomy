@@ -1,11 +1,10 @@
 {
     "id" : "Anatomy",
-    "version" : "0.2.2-SNAPSHOT",
+    "version" : "0.3.0",
     "author" : "XTariq",
     "displayName" : "Anatomy",
     "description" : "A basic anatomy system for players, NPCs, and creatures alike.",
-    "dependencies" : [
-        {"id" : "Core", "minVersion" : "3.0.0"}
-    ],
-    "serverSideOnly" : false
+    "dependencies" : [],
+    "serverSideOnly" : false,
+    "isLibrary": true
 }
