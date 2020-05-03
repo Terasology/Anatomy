@@ -4,7 +4,9 @@
     "author" : "XTariq",
     "displayName" : "Anatomy",
     "description" : "A basic anatomy system for players, NPCs, and creatures alike.",
-    "dependencies" : [],
+    "dependencies" : [
+        {"id" : "Health", "minVersion" : "0.1.0"}
+    ],
     "serverSideOnly" : false,
     "isLibrary": true
 }
