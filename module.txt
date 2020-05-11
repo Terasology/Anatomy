@@ -1,12 +1,13 @@
 {
-    "id" : "Anatomy",
-    "version" : "0.3.0",
-    "author" : "XTariq",
-    "displayName" : "Anatomy",
-    "description" : "A basic anatomy system for players, NPCs, and creatures alike.",
-    "dependencies" : [
-        {"id" : "Health", "minVersion" : "0.1.0"}
+    "id": "Anatomy",
+    "version": "1.0.0",
+    "author": "XTariq",
+    "displayName": "Anatomy",
+    "description": "A basic anatomy system for players, NPCs, and creatures alike.",
+    "dependencies": [
+        { "id": "Health", "minVersion": "1.0.0" }
     ],
-    "serverSideOnly" : false,
-    "isLibrary": true
+    "serverSideOnly": false,
+    "isLibrary": true,
+    "isAugmentation": true
 }
