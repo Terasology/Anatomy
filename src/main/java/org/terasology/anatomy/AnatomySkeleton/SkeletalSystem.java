@@ -1,18 +1,5 @@
-/*
- * Copyright 2017 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.anatomy.AnatomySkeleton;
 
 import com.google.common.collect.Lists;
@@ -21,14 +8,14 @@ import org.terasology.anatomy.AnatomySkeleton.event.BoneHealthChangedEvent;
 import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.PartHealthDetails;
 import org.terasology.anatomy.event.AnatomyStatusGatheringEvent;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.ReceiveEvent;
-import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.logic.console.commandSystem.annotations.Command;
-import org.terasology.logic.console.commandSystem.annotations.Sender;
-import org.terasology.logic.players.event.OnPlayerRespawnedEvent;
-import org.terasology.network.ClientComponent;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.ReceiveEvent;
+import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
+import org.terasology.engine.entitySystem.systems.RegisterSystem;
+import org.terasology.engine.logic.console.commandSystem.annotations.Command;
+import org.terasology.engine.logic.console.commandSystem.annotations.Sender;
+import org.terasology.engine.logic.players.event.OnPlayerRespawnedEvent;
+import org.terasology.engine.network.ClientComponent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,11 +29,11 @@ public class SkeletalSystem extends BaseComponentSystem {
     /**
      * Maps each effect severity to its display name.
      */
-    private Map<Integer, String> severityNameMap = new HashMap<>();
+    private final Map<Integer, String> severityNameMap = new HashMap<>();
 
-    private float DAMAGED_BONE_THRESHOLD = 0.6f;
-    private float BROKEN_BONE_THRESHOLD = 0.4f;
-    private float SHATTERED_BONE_THRESHOLD = 0.2f;
+    private final float DAMAGED_BONE_THRESHOLD = 0.6f;
+    private final float BROKEN_BONE_THRESHOLD = 0.4f;
+    private final float SHATTERED_BONE_THRESHOLD = 0.2f;
 
     @Override
     public void initialise() {
@@ -59,7 +46,8 @@ public class SkeletalSystem extends BaseComponentSystem {
      * Applies or removes effects based on severity when a part's skeletal health changes.
      */
     @ReceiveEvent
-    public void onBoneHealthChanged(BoneHealthChangedEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent, InjuredBoneComponent injuredBoneComponent) {
+    public void onBoneHealthChanged(BoneHealthChangedEvent event, EntityRef entityRef,
+                                    AnatomyComponent anatomyComponent, InjuredBoneComponent injuredBoneComponent) {
         int severity = getEffectSeverity(event.partId, injuredBoneComponent);
         if (severity == 0) {
             removeEffect(entityRef, event.partId);
@@ -72,7 +60,8 @@ public class SkeletalSystem extends BaseComponentSystem {
      * Adds part skeletal statuses to the {@link AnatomyStatusGatheringEvent}.
      */
     @ReceiveEvent
-    public void onGather(AnatomyStatusGatheringEvent event, EntityRef entityRef, InjuredBoneComponent injuredBoneComponent) {
+    public void onGather(AnatomyStatusGatheringEvent event, EntityRef entityRef,
+                         InjuredBoneComponent injuredBoneComponent) {
         if (event.getSystemFilter().equals("") || event.getSystemFilter().equals("Skeletal")) {
             for (Map.Entry<String, List<String>> injuredBoneEffect : injuredBoneComponent.parts.entrySet()) {
                 for (String part : injuredBoneEffect.getValue()) {
@@ -145,7 +134,8 @@ public class SkeletalSystem extends BaseComponentSystem {
     }
 
     @ReceiveEvent
-    public void onPlayerRespawn(OnPlayerRespawnedEvent event, EntityRef entityRef, InjuredBoneComponent injuredBoneComponent) {
+    public void onPlayerRespawn(OnPlayerRespawnedEvent event, EntityRef entityRef,
+                                InjuredBoneComponent injuredBoneComponent) {
         entityRef.removeComponent(InjuredBoneComponent.class);
     }
 
@@ -159,7 +149,8 @@ public class SkeletalSystem extends BaseComponentSystem {
         String result = "";
         if (injuredBoneComponent != null) {
             result += "Bone healths :\n";
-            for (Map.Entry<String, PartHealthDetails> partHealthDetailsEntry : injuredBoneComponent.partHealths.entrySet()) {
+            for (Map.Entry<String, PartHealthDetails> partHealthDetailsEntry :
+                    injuredBoneComponent.partHealths.entrySet()) {
                 result += partHealthDetailsEntry.getKey() + " :" + partHealthDetailsEntry.getValue().health + "/" + partHealthDetailsEntry.getValue().maxHealth + "\n";
             }
         } else {
@@ -176,7 +167,8 @@ public class SkeletalSystem extends BaseComponentSystem {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         InjuredBoneComponent injuredBoneComponent = character.getComponent(InjuredBoneComponent.class);
         if (injuredBoneComponent != null) {
-            for (Map.Entry<String, PartHealthDetails> partHealthDetailsEntry : injuredBoneComponent.partHealths.entrySet()) {
+            for (Map.Entry<String, PartHealthDetails> partHealthDetailsEntry :
+                    injuredBoneComponent.partHealths.entrySet()) {
                 partHealthDetailsEntry.getValue().health = partHealthDetailsEntry.getValue().maxHealth;
                 character.send(new BoneHealthChangedEvent(partHealthDetailsEntry.getKey()));
             }

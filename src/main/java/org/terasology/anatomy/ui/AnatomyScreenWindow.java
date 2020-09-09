@@ -3,15 +3,15 @@
 package org.terasology.anatomy.ui;
 
 import org.terasology.anatomy.event.AnatomyStatusGatheringEvent;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.logic.characters.CharacterComponent;
-import org.terasology.logic.players.LocalPlayer;
-import org.terasology.registry.CoreRegistry;
-import org.terasology.rendering.nui.BaseInteractionScreen;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.logic.characters.CharacterComponent;
+import org.terasology.engine.logic.players.LocalPlayer;
+import org.terasology.engine.registry.CoreRegistry;
+import org.terasology.engine.rendering.nui.BaseInteractionScreen;
+import org.terasology.engine.utilities.Assets;
 import org.terasology.nui.databinding.ReadOnlyBinding;
 import org.terasology.nui.skin.UISkin;
 import org.terasology.nui.widgets.UILabel;
-import org.terasology.utilities.Assets;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,10 +22,9 @@ import java.util.Map;
  */
 public class AnatomyScreenWindow extends BaseInteractionScreen {
     private static final String ANATOMY_PART_PREFIX = "Anatomy:";
-    private EntityRef player = EntityRef.NULL;
-
     private final UISkin greenTextSkin = Assets.getSkin("Anatomy:greenText").get();
     private final UISkin redTextSkin = Assets.getSkin("Anatomy:redText").get();
+    private EntityRef player = EntityRef.NULL;
 
     @Override
     public void initialise() {
