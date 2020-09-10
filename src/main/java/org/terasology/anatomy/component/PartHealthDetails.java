@@ -3,7 +3,7 @@
 package org.terasology.anatomy.component;
 
 import org.terasology.engine.network.Replicate;
-import org.terasology.reflection.MappedContainer;
+import org.terasology.nui.reflection.MappedContainer;
 
 /**
  * Container for all the health details corresponding to a part in a system.
