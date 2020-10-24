@@ -15,16 +15,16 @@
  */
 package org.terasology.anatomy.event;
 
-import org.lwjgl.input.Keyboard;
 import org.terasology.input.BindButtonEvent;
 import org.terasology.input.DefaultBinding;
 import org.terasology.input.InputType;
+import org.terasology.input.Keyboard;
 import org.terasology.input.RegisterBindButton;
 
 /**
  * This event is sent when the key V is pressed.
  */
 @RegisterBindButton(id = "anatomyScreen", description = "Anatomy Screen", category = "interaction")
-@DefaultBinding(type = InputType.KEY, id = Keyboard.KEY_V)
+@DefaultBinding(type = InputType.KEY, id = Keyboard.KeyId.V)
 public class AnatomyScreenButtonEvent extends BindButtonEvent {
 }
