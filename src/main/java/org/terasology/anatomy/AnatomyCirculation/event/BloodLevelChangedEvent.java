@@ -15,7 +15,7 @@
  */
 package org.terasology.anatomy.AnatomyCirculation.event;
 
-import org.terasology.entitySystem.event.Event;
+import org.terasology.engine.entitySystem.event.Event;
 
 public class BloodLevelChangedEvent implements Event {
 }

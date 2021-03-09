@@ -16,8 +16,8 @@
 package org.terasology.anatomy.AnatomyCirculation.component;
 
 import org.terasology.anatomy.component.PartHealthDetails;
-import org.terasology.entitySystem.Component;
-import org.terasology.network.Replicate;
+import org.terasology.engine.entitySystem.Component;
+import org.terasology.engine.network.Replicate;
 
 import java.util.HashMap;
 import java.util.List;

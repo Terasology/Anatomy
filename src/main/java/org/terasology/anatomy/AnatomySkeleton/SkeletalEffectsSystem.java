@@ -19,12 +19,12 @@ import com.google.common.collect.Lists;
 import org.terasology.anatomy.AnatomySkeleton.component.InjuredBoneComponent;
 import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.AnatomyPartTag;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.ReceiveEvent;
-import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.logic.characters.AffectJumpForceEvent;
-import org.terasology.logic.characters.GetMaxSpeedEvent;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.ReceiveEvent;
+import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
+import org.terasology.engine.entitySystem.systems.RegisterSystem;
+import org.terasology.engine.logic.characters.AffectJumpForceEvent;
+import org.terasology.engine.logic.characters.GetMaxSpeedEvent;
 
 import java.util.HashMap;
 import java.util.List;

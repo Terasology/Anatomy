@@ -15,7 +15,7 @@
  */
 package org.terasology.anatomy.component;
 
-import org.terasology.network.Replicate;
+import org.terasology.engine.network.Replicate;
 import org.terasology.reflection.MappedContainer;
 
 /**

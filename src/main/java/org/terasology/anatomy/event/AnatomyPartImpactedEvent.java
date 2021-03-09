@@ -16,11 +16,11 @@
 package org.terasology.anatomy.event;
 
 import org.terasology.anatomy.component.AnatomyPartTag;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.Event;
-import org.terasology.entitySystem.prefab.Prefab;
-import org.terasology.logic.health.EngineDamageTypes;
-import org.terasology.network.ServerEvent;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.Event;
+import org.terasology.engine.entitySystem.prefab.Prefab;
+import org.terasology.engine.logic.health.EngineDamageTypes;
+import org.terasology.engine.network.ServerEvent;
 
 /**
  * This event is sent when an anatomy part is damaged.

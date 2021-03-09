@@ -15,11 +15,11 @@
  */
 package org.terasology.anatomy.event;
 
-import org.terasology.input.BindButtonEvent;
-import org.terasology.input.DefaultBinding;
+import org.terasology.engine.input.BindButtonEvent;
+import org.terasology.engine.input.DefaultBinding;
+import org.terasology.engine.input.RegisterBindButton;
 import org.terasology.input.InputType;
 import org.terasology.input.Keyboard;
-import org.terasology.input.RegisterBindButton;
 
 /**
  * This event is sent when the key V is pressed.

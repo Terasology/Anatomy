@@ -20,16 +20,17 @@ import org.terasology.anatomy.AnatomySkeleton.event.BoneHealthChangedEvent;
 import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.PartHealthDetails;
 import org.terasology.anatomy.event.AnatomyPartImpactedEvent;
-import org.terasology.entitySystem.entity.EntityManager;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.ReceiveEvent;
-import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterMode;
-import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.logic.delay.DelayManager;
-import org.terasology.logic.delay.DelayedActionTriggeredEvent;
+import org.terasology.engine.core.Time;
+import org.terasology.engine.entitySystem.entity.EntityManager;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.ReceiveEvent;
+import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
+import org.terasology.engine.entitySystem.systems.RegisterMode;
+import org.terasology.engine.entitySystem.systems.RegisterSystem;
+import org.terasology.engine.logic.delay.DelayManager;
+import org.terasology.engine.logic.delay.DelayedActionTriggeredEvent;
+import org.terasology.engine.registry.In;
 import org.terasology.math.TeraMath;
-import org.terasology.registry.In;
 
 /**
  * This authority system manages the Skeletal system health updates.
@@ -37,7 +38,7 @@ import org.terasology.registry.In;
 @RegisterSystem(value = RegisterMode.AUTHORITY)
 public class SkeletalHealthSystem extends BaseComponentSystem {
     @In
-    private org.terasology.engine.Time time;
+    private Time time;
 
     @In
     private EntityManager entityManager;

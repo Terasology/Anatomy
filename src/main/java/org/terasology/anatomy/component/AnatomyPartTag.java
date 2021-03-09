@@ -16,7 +16,7 @@
 package org.terasology.anatomy.component;
 
 import com.google.common.collect.Lists;
-import org.terasology.network.Replicate;
+import org.terasology.engine.network.Replicate;
 import org.terasology.reflection.MappedContainer;
 
 import java.util.List;
