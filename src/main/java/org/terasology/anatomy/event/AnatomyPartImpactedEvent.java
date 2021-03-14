@@ -19,7 +19,7 @@ import org.terasology.anatomy.component.AnatomyPartTag;
 import org.terasology.engine.entitySystem.entity.EntityRef;
 import org.terasology.engine.entitySystem.event.Event;
 import org.terasology.engine.entitySystem.prefab.Prefab;
-import org.terasology.engine.logic.health.EngineDamageTypes;
+import org.terasology.logic.health.EngineDamageTypes;
 import org.terasology.engine.network.ServerEvent;
 
 /**
