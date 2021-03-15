@@ -23,7 +23,7 @@ import org.terasology.engine.entitySystem.prefab.Prefab;
 import org.terasology.engine.entitySystem.prefab.PrefabManager;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
-import org.terasology.logic.health.DestroyEvent;
+import org.terasology.engine.logic.health.DestroyEvent;
 import org.terasology.engine.registry.In;
 
 @RegisterSystem
