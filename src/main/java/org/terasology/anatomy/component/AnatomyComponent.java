@@ -16,7 +16,7 @@ public class AnatomyComponent implements Component<AnatomyComponent> {
     public Map<String, AnatomyPartTag> parts = new HashMap<>();
 
     @Override
-    public void copy(AnatomyComponent other) {
+    public void copyFrom(AnatomyComponent other) {
         this.parts.clear();
         other.parts.forEach((k, v) -> this.parts.put(k, v.copy()));
     }

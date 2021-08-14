@@ -28,7 +28,7 @@ public class InjuredBoneComponent implements Component<InjuredBoneComponent> {
     public Map<String, List<String>> parts = new HashMap<>();
 
     @Override
-    public void copy(InjuredBoneComponent other) {
+    public void copyFrom(InjuredBoneComponent other) {
         this.partHealths.clear();
         other.partHealths.forEach((k, v) -> this.partHealths.put(k, v.copy()));
         this.parts.clear();

@@ -39,7 +39,7 @@ public class InjuredCirculatoryComponent implements Component<InjuredCirculatory
     public long nextRegenTick;
 
     @Override
-    public void copy(InjuredCirculatoryComponent other) {
+    public void copyFrom(InjuredCirculatoryComponent other) {
         this.partHealths.clear();
         other.partHealths.forEach((k, v) -> this.partHealths.put(k, v.copy()));
         this.parts.clear();
