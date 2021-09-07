@@ -15,7 +15,7 @@
  */
 package org.terasology.anatomy.AnatomyCirculation.event;
 
-import org.terasology.engine.entitySystem.event.Event;
+import org.terasology.gestalt.entitysystem.event.Event;
 
 public class PartCirculatoryEffectChangedEvent implements Event {
 }

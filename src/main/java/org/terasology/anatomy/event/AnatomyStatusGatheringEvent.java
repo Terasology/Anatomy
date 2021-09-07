@@ -16,7 +16,7 @@
 package org.terasology.anatomy.event;
 
 import com.google.common.collect.Lists;
-import org.terasology.engine.entitySystem.event.Event;
+import org.terasology.gestalt.entitysystem.event.Event;
 
 import java.util.HashMap;
 import java.util.List;

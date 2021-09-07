@@ -15,7 +15,7 @@
  */
 package org.terasology.anatomy.AnatomySkeleton.event;
 
-import org.terasology.engine.entitySystem.event.Event;
+import org.terasology.gestalt.entitysystem.event.Event;
 
 /**
  * This event is sent when a part's skeletal system health changes.
