@@ -27,11 +27,11 @@ import org.terasology.engine.entitySystem.systems.RegisterSystem;
 import org.terasology.engine.logic.console.commandSystem.annotations.Command;
 import org.terasology.engine.logic.console.commandSystem.annotations.CommandParam;
 import org.terasology.engine.logic.console.commandSystem.annotations.Sender;
-import org.terasology.module.health.events.OnDamagedEvent;
 import org.terasology.engine.network.ClientComponent;
 import org.terasology.engine.registry.In;
 import org.terasology.engine.utilities.random.FastRandom;
 import org.terasology.engine.utilities.random.Random;
+import org.terasology.module.health.events.OnDamagedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
