@@ -23,13 +23,13 @@ import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.PartHealthDetails;
 import org.terasology.anatomy.event.AnatomyStatusGatheringEvent;
 import org.terasology.engine.entitySystem.entity.EntityRef;
-import org.terasology.engine.entitySystem.event.ReceiveEvent;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
 import org.terasology.engine.logic.console.commandSystem.annotations.Command;
 import org.terasology.engine.logic.console.commandSystem.annotations.Sender;
 import org.terasology.engine.logic.players.event.OnPlayerRespawnedEvent;
 import org.terasology.engine.network.ClientComponent;
+import org.terasology.gestalt.entitysystem.event.ReceiveEvent;
 
 import java.util.HashMap;
 import java.util.List;

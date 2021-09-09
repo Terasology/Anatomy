@@ -23,13 +23,13 @@ import org.terasology.anatomy.event.AnatomyPartImpactedEvent;
 import org.terasology.engine.core.Time;
 import org.terasology.engine.entitySystem.entity.EntityManager;
 import org.terasology.engine.entitySystem.entity.EntityRef;
-import org.terasology.engine.entitySystem.event.ReceiveEvent;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterMode;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
 import org.terasology.engine.logic.delay.DelayManager;
 import org.terasology.engine.logic.delay.DelayedActionTriggeredEvent;
 import org.terasology.engine.registry.In;
+import org.terasology.gestalt.entitysystem.event.ReceiveEvent;
 import org.terasology.math.TeraMath;
 
 /**

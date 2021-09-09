@@ -21,7 +21,6 @@ import org.terasology.anatomy.event.AnatomyPartImpactedEvent;
 import org.terasology.anatomy.event.AnatomyStatusGatheringEvent;
 import org.terasology.engine.entitySystem.entity.EntityManager;
 import org.terasology.engine.entitySystem.entity.EntityRef;
-import org.terasology.engine.entitySystem.event.ReceiveEvent;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
 import org.terasology.engine.logic.console.commandSystem.annotations.Command;
@@ -31,6 +30,7 @@ import org.terasology.engine.network.ClientComponent;
 import org.terasology.engine.registry.In;
 import org.terasology.engine.utilities.random.FastRandom;
 import org.terasology.engine.utilities.random.Random;
+import org.terasology.gestalt.entitysystem.event.ReceiveEvent;
 import org.terasology.module.health.events.OnDamagedEvent;
 
 import java.util.ArrayList;
