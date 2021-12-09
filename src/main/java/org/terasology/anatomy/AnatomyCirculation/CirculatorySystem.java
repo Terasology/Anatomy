@@ -1,18 +1,5 @@
-/*
- * Copyright 2017 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2021 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.anatomy.AnatomyCirculation;
 
 import com.google.common.collect.Lists;
@@ -23,13 +10,13 @@ import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.PartHealthDetails;
 import org.terasology.anatomy.event.AnatomyStatusGatheringEvent;
 import org.terasology.engine.entitySystem.entity.EntityRef;
-import org.terasology.engine.entitySystem.event.ReceiveEvent;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
 import org.terasology.engine.logic.console.commandSystem.annotations.Command;
 import org.terasology.engine.logic.console.commandSystem.annotations.Sender;
 import org.terasology.engine.logic.players.event.OnPlayerRespawnedEvent;
 import org.terasology.engine.network.ClientComponent;
+import org.terasology.gestalt.entitysystem.event.ReceiveEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,11 +24,12 @@ import java.util.Map;
 
 @RegisterSystem
 public class CirculatorySystem extends BaseComponentSystem {
-    private Map<Integer, String> severityNameMap = new HashMap<>();
 
-    private float MINOR_BLEEDING_THRESHOLD = 0.8f;
-    private float BLEEDING_THRESHOLD = 0.5f;
-    private float SEVERE_BLEEDING_THRESHOLD = 0.2f;
+    private static final float MINOR_BLEEDING_THRESHOLD = 0.8f;
+    private static final float BLEEDING_THRESHOLD = 0.5f;
+    private static final float SEVERE_BLEEDING_THRESHOLD = 0.2f;
+
+    private final Map<Integer, String> severityNameMap = new HashMap<>();
 
     @Override
     public void initialise() {
@@ -51,7 +39,8 @@ public class CirculatorySystem extends BaseComponentSystem {
     }
 
     @ReceiveEvent
-    public void onPartCirculatoryHealthChanged(PartCirculatoryHealthChangedEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent, InjuredCirculatoryComponent injuredCirculatoryComponent) {
+    public void onPartCirculatoryHealthChanged(PartCirculatoryHealthChangedEvent event, EntityRef entityRef,
+                                               AnatomyComponent anatomyComponent, InjuredCirculatoryComponent injuredCirculatoryComponent) {
         int severity = getEffectSeverity(event.partId, injuredCirculatoryComponent);
         if (severity == 0) {
             removeEffect(entityRef, event.partId);
@@ -121,7 +110,8 @@ public class CirculatorySystem extends BaseComponentSystem {
     }
 
     @ReceiveEvent
-    public void onPlayerRespawn(OnPlayerRespawnedEvent event, EntityRef entityRef, InjuredCirculatoryComponent injuredCirculatoryComponent) {
+    public void onPlayerRespawn(OnPlayerRespawnedEvent event, EntityRef entityRef,
+                                InjuredCirculatoryComponent injuredCirculatoryComponent) {
         entityRef.removeComponent(InjuredCirculatoryComponent.class);
     }
 
@@ -132,10 +122,16 @@ public class CirculatorySystem extends BaseComponentSystem {
         String result = "";
         if (injuredCirculatoryComponent != null) {
             result += "Blood level : ";
-            result += injuredCirculatoryComponent.bloodLevel + "/" + injuredCirculatoryComponent.maxBloodLevel + " Blood regen rate: " + injuredCirculatoryComponent.bloodRegenRate + "\n";
+            result += injuredCirculatoryComponent.bloodLevel + "/" +
+                    injuredCirculatoryComponent.maxBloodLevel +
+                    " Blood regen rate: " +
+                    injuredCirculatoryComponent.bloodRegenRate + "\n";
             result += "Circulatory system healths :\n";
             for (Map.Entry<String, PartHealthDetails> partHealthDetailsEntry : injuredCirculatoryComponent.partHealths.entrySet()) {
-                result += partHealthDetailsEntry.getKey() + " :" + partHealthDetailsEntry.getValue().health + "/" + partHealthDetailsEntry.getValue().maxHealth + "\n";
+                result +=
+                        partHealthDetailsEntry.getKey()
+                                + " :" + partHealthDetailsEntry.getValue().health
+                                + "/" + partHealthDetailsEntry.getValue().maxHealth + "\n";
             }
         } else {
             result += "Circulatory system healthy.\n";

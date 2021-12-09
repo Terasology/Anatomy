@@ -1,18 +1,5 @@
-/*
- * Copyright 2017 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2021 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.anatomy.AnatomySkeleton;
 
 import com.google.common.collect.Lists;
@@ -20,11 +7,11 @@ import org.terasology.anatomy.AnatomySkeleton.component.InjuredBoneComponent;
 import org.terasology.anatomy.component.AnatomyComponent;
 import org.terasology.anatomy.component.AnatomyPartTag;
 import org.terasology.engine.entitySystem.entity.EntityRef;
-import org.terasology.engine.entitySystem.event.ReceiveEvent;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
 import org.terasology.engine.logic.characters.AffectJumpForceEvent;
 import org.terasology.engine.logic.characters.GetMaxSpeedEvent;
+import org.terasology.gestalt.entitysystem.event.ReceiveEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,12 +22,14 @@ import java.util.Map;
  */
 @RegisterSystem
 public class SkeletalEffectsSystem extends BaseComponentSystem {
+
+    private static final String MOBILITY_EFFECT = "mobility";
+
     /**
      * Stores the health thresholds at which different severities of the effect occur.
      */
-    private Map<String, Float> severityPercentageEffectMap = new HashMap<>();
+    private final Map<String, Float> severityPercentageEffectMap = new HashMap<>();
 
-    private String MOBILITY_EFFECT = "mobility";
 
     @Override
     public void initialise() {
@@ -53,7 +42,8 @@ public class SkeletalEffectsSystem extends BaseComponentSystem {
      * Modifies the max speed based on skeletal effects.
      */
     @ReceiveEvent
-    public void modifySpeed(GetMaxSpeedEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent, InjuredBoneComponent injuredBoneComponent) {
+    public void modifySpeed(GetMaxSpeedEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent,
+                            InjuredBoneComponent injuredBoneComponent) {
         List<String> contributingParts = getContributingParts(anatomyComponent, MOBILITY_EFFECT);
         float multiplier = getMultiplier(injuredBoneComponent, contributingParts);
         event.multiply(multiplier);
@@ -63,7 +53,8 @@ public class SkeletalEffectsSystem extends BaseComponentSystem {
      * Modifies the jump speed/height based on skeletal effects.
      */
     @ReceiveEvent
-    public void modifyJumpSpeed(AffectJumpForceEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent, InjuredBoneComponent injuredBoneComponent) {
+    public void modifyJumpSpeed(AffectJumpForceEvent event, EntityRef entityRef, AnatomyComponent anatomyComponent,
+                                InjuredBoneComponent injuredBoneComponent) {
         List<String> contributingParts = getContributingParts(anatomyComponent, MOBILITY_EFFECT);
         float multiplier = getMultiplier(injuredBoneComponent, contributingParts);
         event.multiply(multiplier);

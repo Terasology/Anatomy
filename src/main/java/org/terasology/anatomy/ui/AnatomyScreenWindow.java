@@ -1,4 +1,4 @@
-// Copyright 2020 The Terasology Foundation
+// Copyright 2021 The Terasology Foundation
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.anatomy.ui;
 
@@ -22,10 +22,9 @@ import java.util.Map;
  */
 public class AnatomyScreenWindow extends BaseInteractionScreen {
     private static final String ANATOMY_PART_PREFIX = "Anatomy:";
-    private EntityRef player = EntityRef.NULL;
-
     private final UISkin greenTextSkin = Assets.getSkin("Anatomy:greenText").get();
     private final UISkin redTextSkin = Assets.getSkin("Anatomy:redText").get();
+    private EntityRef player = EntityRef.NULL;
 
     @Override
     public void initialise() {

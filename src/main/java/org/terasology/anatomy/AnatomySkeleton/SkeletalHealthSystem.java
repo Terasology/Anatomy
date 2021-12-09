@@ -1,18 +1,5 @@
-/*
- * Copyright 2017 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2021 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.anatomy.AnatomySkeleton;
 
 import org.terasology.anatomy.AnatomySkeleton.component.InjuredBoneComponent;
@@ -23,20 +10,24 @@ import org.terasology.anatomy.event.AnatomyPartImpactedEvent;
 import org.terasology.engine.core.Time;
 import org.terasology.engine.entitySystem.entity.EntityManager;
 import org.terasology.engine.entitySystem.entity.EntityRef;
-import org.terasology.engine.entitySystem.event.ReceiveEvent;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterMode;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
 import org.terasology.engine.logic.delay.DelayManager;
 import org.terasology.engine.logic.delay.DelayedActionTriggeredEvent;
 import org.terasology.engine.registry.In;
+import org.terasology.gestalt.entitysystem.event.ReceiveEvent;
 import org.terasology.math.TeraMath;
 
 /**
  * This authority system manages the Skeletal system health updates.
  */
-@RegisterSystem(value = RegisterMode.AUTHORITY)
+@RegisterSystem(RegisterMode.AUTHORITY)
 public class SkeletalHealthSystem extends BaseComponentSystem {
+
+    private static final String SKELETAL_REGEN_PREFIX = "Skeletal:Regen:";
+    private static final String BONE_CHARACTERISTIC = "bone";
+
     @In
     private Time time;
 
@@ -46,10 +37,7 @@ public class SkeletalHealthSystem extends BaseComponentSystem {
     @In
     private DelayManager delayManager;
 
-    private float bluntDamageMultiplier = 1.5f;
-
-    private String SKELETAL_REGEN_PREFIX = "Skeletal:Regen:";
-    private String BONE_CHARACTERISTIC = "bone";
+    private final float bluntDamageMultiplier = 1.5f;
 
     @ReceiveEvent
     public void onRegen(DelayedActionTriggeredEvent event, EntityRef entityRef, InjuredBoneComponent injuredBoneComponent) {
@@ -81,7 +69,8 @@ public class SkeletalHealthSystem extends BaseComponentSystem {
                 partHealthDetails = new PartHealthDetails();
                 injuredBoneComponent.partHealths.put(event.getTargetPart().id, partHealthDetails);
                 // Part has been injured for the first time, so add delayed regen event.
-                delayManager.addDelayedAction(entityRef, SKELETAL_REGEN_PREFIX + event.getTargetPart().id, (long) (1000 / partHealthDetails.regenRate));
+                delayManager.addDelayedAction(entityRef, SKELETAL_REGEN_PREFIX + event.getTargetPart().id,
+                        (long) (1000 / partHealthDetails.regenRate));
             }
             int damageAmount = event.getAmount();
             if (event.getDamageType().getName().equals("Equipment:bluntDamage")) {
